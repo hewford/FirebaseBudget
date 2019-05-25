@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import './drawer.css';
+import selectPage from '../../helpers/selectPage'
 
 class Drawer extends Component {
     logOut = () => {
         this.props.history.push('/signin')
-        const el = document.getElementById('page-container')
-        el.className = 'slidezero'
+        selectPage('slidezero')
+        // const el = document.getElementById('page-container')
+        // el.className = 'slidezero'
         // this.props.signOut()
     }
 
