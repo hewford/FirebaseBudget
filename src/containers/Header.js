@@ -2,6 +2,15 @@ import React, { Component } from 'react'
 import logo from '../budgetlogo.png'
 
 export default class Header extends Component {
+    toggleDrawer = () => {
+        const el = document.getElementById('page-container')
+        if (el.className === 'slidetwo') {
+          el.className = 'slideone'
+        } else {
+          el.className = 'slidetwo'
+        }
+    }
+
     render() {
         return (
             <div className="app-header">
@@ -11,7 +20,7 @@ export default class Header extends Component {
                 <div className='header-title'>
                 App Title
                 </div>
-                <i className="material-icons header-menu" onClick="toggleDrawer()">menu</i>
+                <i className="material-icons header-menu" onClick={this.toggleDrawer}>menu</i>
             </div>
         )
     }

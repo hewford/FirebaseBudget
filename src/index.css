@@ -286,7 +286,7 @@ body {
 #page-container {
   width: 400vw;
   height: 100vh;
-  margin-left: -00vw;
+  margin-left: -100vw;
   transition: .4s ease-in-out;
 }
 
@@ -300,17 +300,13 @@ body {
   height: 100vh;
 }
 
-.page-drawer {
-  background-color: #404040;
-  float: left;
-  width: 85vw;
-  padding: 10px;
-  height: 100vh; /* Should be removed. Only for demonstration */
-}
-
 .landing-logo {
   margin-top: 24px;
   margin-left: calc(50% - 57px);
+}
+
+.slidezero {
+  margin-left: -00vw!important;
 }
 
 .slideone{
@@ -329,9 +325,6 @@ body {
   padding:16px;
 }
 
-.drawer-item{
-  float:right;
-}
 /* Clear floats after the columns */
 .row:after {
 content: "";

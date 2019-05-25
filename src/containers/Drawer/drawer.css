@@ -1,0 +1,24 @@
+.page-drawer {
+    background-color: #404040;
+    float: left;
+    width: 85vw;
+    padding: 24px 32px;
+    height: 100vh; /* Should be removed. Only for demonstration */
+}
+
+.drawer-item{
+    font-family: ArialNarrow;
+    font-size: 28px;
+    color: #FFFFFF;
+    /* letter-spacing: 0; */
+    text-align: right;
+    float: right;
+}
+  
+.break-line {
+    margin: 8px auto;
+    height:1px;
+    border-bottom: 1px solid #FFFFFF;
+    float: right;
+    width: 100%
+}
