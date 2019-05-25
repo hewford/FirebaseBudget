@@ -40,6 +40,10 @@ class SignIn extends Component {
               {this.props.authError ? <p>{this.props.authError}</p> : null}
             </div>
           </div>
+          <div className="form-footer">
+            <p>Don't have an Account?</p>
+            <a className="signup-link">Signup</a>
+          </div>
         </form>
       </div>
     )

@@ -11,7 +11,7 @@ export default class Header extends Component {
                 <div className='header-title'>
                 App Title
                 </div>
-                <i className="material-icons header-menu" onclick="toggleDrawer()">menu</i>
+                <i className="material-icons header-menu" onClick="toggleDrawer()">menu</i>
             </div>
         )
     }

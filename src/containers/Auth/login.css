@@ -1,0 +1,25 @@
+.form {
+    padding:16px;
+    box-shadow: 1px 2px 5px 1px rgba(0,0,0,0.50);
+}
+
+.form-title {
+    margin-bottom: 32px;
+}
+
+button {
+    margin: 8px auto!important;
+}
+
+.form-footer > p, a {
+    font-size: 18px;
+    margin: 0px;
+}
+
+.form-footer > a {
+    font-weight: bold;
+}
+
+.signup-link {
+    color: #ec407a
+}
