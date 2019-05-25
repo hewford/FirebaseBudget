@@ -1,19 +1,31 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { compose } from 'redux'
 import { Redirect } from 'react-router-dom'
-import Main from './Main'
 import CategorySummary from './CategorySummary'
-import { closePostAlert } from '../../store/actions/budgetActions'
+import { closePostAlert, updateForNewMonth } from '../../store/actions/budgetActions'
 
 class Dashboard extends Component {
+  constructor() {
+    super()
+    this.updateMonth = this.updateMonth.bind(this)
+  }
+  updateMonth() {
+    this.props.updateForNewMonth(this.props.auth)
+  }
+
   render() {
     let alert
-    const { auth, categories } = this.props;
+    const { auth, profile, categories } = this.props;
     const { postMessage } = this.props.budgetInfo
     if (!auth.uid) return <Redirect to="/signin" />
+    if (profile.budgetMonth) {
+      const currentMonth = new Date().getMonth()
+      if (profile.budgetMonth !== currentMonth) {
+        this.props.updateForNewMonth(auth)
+      }
+    }
     if (postMessage) {
       alert = (
         <div className='col white s12 red-text center alert-message'>
@@ -41,16 +53,19 @@ class Dashboard extends Component {
 
 const mapStateToProps = (state) => {
   const categories = state.firestore.ordered.categories
+  const { auth, profile } = state.firebase
   return {
     budgetInfo: state.budgetInfo,
-    auth: state.firebase.auth,
+    auth,
+    profile,
     categories,
   }
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
-		closePostAlert: (expense) => dispatch(closePostAlert(expense))
+    closePostAlert: (expense) => dispatch(closePostAlert(expense)),
+    updateForNewMonth: (data) => dispatch(updateForNewMonth(data))
 	}
 }
 

@@ -16,6 +16,7 @@ const SignedInLinks = (props) => {
         <li onClick={props.handleToggle} className="col s12"><NavLink to='/' className="btn btn-floating pink lighten-1">
           {props.profile.initials}
         </NavLink></li>
+        <li className="col s12">v2</li>
       </ul>
   )
 }

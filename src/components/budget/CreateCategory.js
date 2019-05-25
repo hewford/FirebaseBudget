@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { createCategory } from '../../store/actions/budgetActions'
+import { createCategory, editCategory } from '../../store/actions/budgetActions'
 import { colors } from '../../utils/colors.js'
 
 class CreateCategory extends Component {
@@ -14,16 +14,22 @@ class CreateCategory extends Component {
   handleChange = (e) => {
     e.preventDefault();
     let {id, value} = e.target
-    if (id == 'budget') value = (Number(e.target.value.replace(/[^0-9]+/g, ''))/100).toFixed(2)
+    if (id === 'budget') value = (Number(e.target.value.replace(/[^0-9]+/g, ''))/100).toFixed(2)
     this.setState({
       [id]: value
     })
   }
   handleSubmit = (e) => {
-    debugger
+    const { id } = this.props.match.params
     e.preventDefault();
     const { budget, color, category } = this.state
-    this.props.createCategory({ budget, color, category })
+    if (id) {
+      console.log(id)
+      this.props.editCategory(budget, color, category, id)
+    } else {
+      this.props.createCategory({ budget, color, category })
+    }
+    this.props.history.push('/')
   }
   handleBack = (e) => {
     e.preventDefault();
@@ -40,6 +46,16 @@ class CreateCategory extends Component {
       color: e.target.dataset.color,
       colorPicker: false
     })
+  }
+  componentWillMount() {
+    const { category } = this.props
+    if (category) {
+      this.setState({
+        category: category.category,
+        budget: category.budget,
+        color: category.color
+      })
+    }
   }
 
   renderColorPicker = (colors) => {
@@ -72,13 +88,15 @@ class CreateCategory extends Component {
     if(value === '0') {
         value = ''
     }
-    else if(value.indexOf('.') == -1) {
+    else if(value.indexOf('.') === -1) {
         value += '.00'
     }
     else if(n[n.length-1] === '0' && value.length > 1) {
         value += 0
     }
     value = '$'+ value
+
+    const { id } = this.props.match.params
 
     return (
       <div className="container relative">
@@ -89,7 +107,7 @@ class CreateCategory extends Component {
           </div>
         </div>
         <form className={`white row ${colorPicker ? 'hide' : ''}`}>
-            <h4 className="grey-text text-darken-3">Add Category</h4>
+            <h4 className="grey-text text-darken-3">{`${id ? "Edit" : "Add"} Category`}</h4>
 
             <div className="input-field input-entry offset-s3 col s6">
                 <p className="input-label left">Category Name:</p>
@@ -128,9 +146,9 @@ class CreateCategory extends Component {
 
 function moveCursorToEnd(e) {
 	const el = e.currentTarget
-    if (typeof el.selectionStart == "number") {
+    if (typeof el.selectionStart === "number") {
         el.selectionStart = el.selectionEnd = el.value.length;
-    } else if (typeof el.createTextRange != "undefined") {
+    } else if (typeof el.createTextRange !== "undefined") {
         el.focus();
         var range = el.createTextRange();
         range.collapse(false);
@@ -138,16 +156,21 @@ function moveCursorToEnd(e) {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
+  const { id } = props.match.params
+	const { categories } = state.firestore.data
+  const category = categories ? categories[id] : null
   return {
     authError: state.auth.authError,
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
+    category
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createCategory: (category) => dispatch(createCategory(category))
+    createCategory: (category) => dispatch(createCategory(category)),
+    editCategory: (budget, color, category, id) => dispatch(editCategory(budget, color, category, id))
   }
 }
 

@@ -25,11 +25,14 @@ class Navbar extends Component {
     this.setState({dropdown:!this.state.dropdown})
   }
 
-  render() {
+  componentDidMount() {
     if (this.state.loading) {
       this.setState({loading: false})
       this.props.history.push('/')
     }
+  }
+
+  render() {
     const { auth, profile } = this.props;
     const dropdown = this.state.dropdown ? 'drop-row row' : ''
     const links = auth.uid ? 

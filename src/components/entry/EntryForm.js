@@ -2,9 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
-import { compose } from 'redux'
-import { firestoreConnect } from 'react-redux-firebase'
+// import { compose } from 'redux'
+// import { firestoreConnect } from 'react-redux-firebase'
 import { addExpense } from '../../store/actions/budgetActions'
+// import moment from 'moment.js'
+import ExpenseList from './ExpenseList'
 
 class EntryForm extends React.Component {
 	constructor(props) {
@@ -14,6 +16,10 @@ class EntryForm extends React.Component {
 			location: '',
 			rememberLocation: false
 		}
+	}
+
+	componentWillMount() {
+		this.setState({expenses: this.props.expenses})
 	}
 	
 	handleSubmit = async(e) => {
@@ -60,18 +66,27 @@ class EntryForm extends React.Component {
 		if (this.state.submitted || !category) return { render: <Redirect to='/' /> }
 		return null
 	}
+
+	editCategory = () => {
+		this.props.history.push(`/createcategory/${this.props.match.params.id}`)
+	}
+
+	editExpense = (e) => {
+		this.setState({edit:e.target.dataset.id})
+	}
 	
 	render() {
-		const { auth, category } = this.props;
 		const checkAuth = this.checkAuth()
 		if (checkAuth) return checkAuth.render
-
+		
+		const { category } = this.props;	
+		
 		let n = String(this.state.spent)
 		let value = Number(n).toLocaleString('en');
 		if(value === '0') {
 			value = ''
 		}
-		else if(value.indexOf('.') == -1) {
+		else if(value.indexOf('.') === -1) {
 			value += '.00'
 		}
 		else if(n[n.length-1] === '0' && value.length > 1) {
@@ -81,8 +96,9 @@ class EntryForm extends React.Component {
 
 		return(
 			<div className="container center">
-				<form className="white row">
-					<h5 className="grey-text text-darken-3">Expense Entry: {category.category}</h5>
+				<form className="white row relative">
+					<span onClick={this.editCategory} className="grey-text text-darken-3 options-button">edit</span>
+					<h5 className={`${category.color}`}>Expense Entry: {category.category}</h5>
 
 					<div className="input-field input-entry offset-s3 col s6">
 						<p className="input-label left">Amount:</p>
@@ -130,6 +146,30 @@ class EntryForm extends React.Component {
 						</div>
 					</div>
 				</form>
+
+				<ExpenseList expenses={this.props.expenses}/>
+
+				{/* {this.state.expenses.map((expense, index) => {
+					const date = new Date(expense.date.seconds * 1000).toDateString()
+					if (this.state.edit == index) {
+						console.log(expense)
+						return(
+							<div>Editing...</div>
+						)
+					} else {
+						return(
+							<div key={`expense-list-${index}`}className="card">
+							<span onClick={this.editExpense} data-id={index} className="grey-text text-darken-3 options-button">edit</span>
+								<div className="card-content">
+									<span className={`card-title`}>{date}</span>
+									<span>Spent: ${(expense.spent)}</span>
+									<br/>
+									<span>{expense.location}</span>
+								</div>
+							</div>
+						)
+					}
+				})} */}
 				
 			</div>
 		)
@@ -138,9 +178,9 @@ class EntryForm extends React.Component {
 
 function moveCursorToEnd(e) {
 	const el = e.currentTarget
-    if (typeof el.selectionStart == "number") {
+    if (typeof el.selectionStart === "number") {
         el.selectionStart = el.selectionEnd = el.value.length;
-    } else if (typeof el.createTextRange != "undefined") {
+    } else if (typeof el.createTextRange !== "undefined") {
         el.focus();
         var range = el.createTextRange();
         range.collapse(false);
@@ -153,9 +193,11 @@ const mapStateToProps = (state, props) => {
 	const { id } = props.match.params
 	const { categories } = state.firestore.data
 	const category = categories ? categories[id] : null
+	const expenses = category && category.expenses ? category.expenses.sort((a, b) => {return b.date.seconds - a.date.seconds}) : []
 	return {
 		auth: state.firebase.auth,
-		category
+		category,
+		expenses
 	}
 }
   

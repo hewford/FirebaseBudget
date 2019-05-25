@@ -38,7 +38,8 @@ export const signUp = (newUser) => {
             .set({
                 firstName,
                 lastName,
-                initials: firstName[0] + lastName[0]
+                initials: firstName[0] + lastName[0],
+                email: newUser.email
             })
         }).then((data) => {
             dispatch({type: 'SIGNUP_SUCCESS '})

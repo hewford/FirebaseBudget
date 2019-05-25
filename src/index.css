@@ -59,6 +59,20 @@ nav {
   color: #ec407a !important;
 }
 
+.options-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 6px 8px;
+  border: lightgray 1px solid;
+  box-shadow: #ec407a 10px;
+  border-radius: 15%;
+}
+
+.relative {
+  position: relative;
+}
+
 .input-label{
   margin-block-start:0px;
   margin-block-end:0px;

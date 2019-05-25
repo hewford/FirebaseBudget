@@ -86,11 +86,3 @@ const apiFetch = () => {
 		}
 	}
 }
-
-const apiPost = (body) => {
-	let message = "Posted "
-	message += body.spent
-	message += " to "
-	message += body.category
-	return {data: message}
-}
