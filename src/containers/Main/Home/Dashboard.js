@@ -1,93 +1,20 @@
 import React, { Component } from 'react'
+import CategoryExpenseButton from './CategoryExpenseButton'
 
+const categories = [{color:"#FF6F00", name: "Personal1"}, {color:"#00D9C5", name: "Personal2"}, {color:"#FF00A2", name: "Personal3"}, {color:"#007AFF", name: "Personal4"}, {color:"#00B309", name: "Personal5"}, {color:"#6D4322", name: "Personal6"}]
 export class Dashboard extends Component {
     render() {
         return (
             <div onclick="setDash()" className="dash">
-                  <div className="col s6">
-                      <div className="card white offset-vertical">
-                          <span className="float-right">...</span>
-                          <div className="card-content black-text">
-                              <div className="card-title" style={{color:"#FF6F00"}}>
-                                  Personal1
-                              </div>
-                              <p className="card-body">$data</p>
-
-                          </div>
-
-                      </div>
-                  </div>
-
-                  <div className="col s6">
-                      <div className="card white nonoffset-vertical">
-                          <span className="float-right">...</span>
-                          <div className="card-content black-text">
-                              <div className="card-title" style={{color:"#00D9C5"}}>
-                                  Personal2
-                              </div>
-                              <p className="card-body">$data</p>
-
-                          </div>
-
-                      </div>
-                  </div>
-
-                  <div className="col s6">
-                      <div className="card white offset-vertical">
-                          <span className="float-right">...</span>
-                          <div className="card-content black-text">
-                              <div className="card-title" style={{color:"#FF00A2"}}>
-                                  Personal3
-                              </div>
-                              <p className="card-body">$data</p>
-
-                          </div>
-
-                      </div>
-                  </div>
-
-                  <div className="col s6">
-                      <div className="card white nonoffset-vertical">
-                          <span className="float-right">...</span>
-                          <div className="card-content black-text">
-                              <div className="card-title" style={{color:"#007AFF"}}>
-                                  Personal4
-                              </div>
-                              <p className="card-body">$data</p>
-
-                          </div>
-
-                      </div>
-                  </div>
-
-                  <div className="col s6">
-                      <div className="card white offset-vertical">
-                          <span className="float-right">...</span>
-                          <div className="card-content black-text">
-                              <div className="card-title" style={{color:"#00B309"}}>
-                                  Personal3
-                              </div>
-                              <p className="card-body">$data</p>
-
-                          </div>
-
-                      </div>
-                  </div>
-
-                  <div className="col s6">
-                      <div className="card white nonoffset-vertical">
-                          <span className="float-right">...</span>
-                          <div className="card-content black-text">
-                              <div className="card-title" style={{color:"#6D4322"}}>
-                                  Personal4
-                              </div>
-                              <p className="card-body">$data</p>
-
-                          </div>
-
-                      </div>
-                  </div>
-                </div>
+                {categories.map((category, index) => {
+                    return (
+                        <CategoryExpenseButton
+                            offset={index % 2 ? 'non' : ''}
+                            category={category}
+                        />
+                    )
+                })}
+            </div>
         )
     }
 }

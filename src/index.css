@@ -27,15 +27,6 @@ nav {
   justify-content: center;
 }
 
-.card {
-  /* margin:8px; */
-  width: 100%;
-}
-
-.card-title {
-  font-size: 22px!important;
-}
-
 .gutter-right{
   margin-right:5vw;
 }
@@ -244,34 +235,6 @@ body {
   /* border-radius: 2% 2% 2% 30%!important; */
   position: relative;
   box-shadow: 1px 2px 5px 1px rgba(0,0,0,0.50)!important;
-}
-
-.card-content {
-  padding-left: 8px!important;
-  padding-top: 8px!important;
-  padding-right: 8px!important;
-  padding-bottom: 8px!important;
-}
-
-.card-title {
-  padding-top:8px;
-  font-family: Arial, Helvetica, sans-serif!important;
-  font-size: 20px!important;
-  font-weight: bold!important;
-}
-
-.offset-vertical{
-  margin-top: -17px!important;
-}
-
-.nonoffset-vertical{
-  margin-top: -1px!important;
-}
-
-.card-body{
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
 }
 
 .col {

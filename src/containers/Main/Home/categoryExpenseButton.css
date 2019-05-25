@@ -1,0 +1,31 @@
+.offset-vertical{
+    margin-top: -17px!important;
+}
+
+.nonoffset-vertical{
+    margin-top: -1px!important;
+}
+
+.card-content {
+    padding-left: 8px!important;
+    padding-top: 8px!important;
+    padding-right: 8px!important;
+    padding-bottom: 8px!important;
+}
+
+.card-title {
+    padding-top:8px;
+    font-family: Arial, Helvetica, sans-serif!important;
+    font-size: 22px!important;
+    font-weight: bold!important;
+}
+
+.card-body{
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+}
+
+.card {
+    width: 100%;
+}
