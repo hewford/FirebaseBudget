@@ -14,13 +14,17 @@ export class Login extends Component {
         })
     }
     handleSubmit = (e) => {
+        console.log('hi')
         e.preventDefault();
-        this.props.signIn(this.state)
+        // this.props.signIn(this.state)
+    }
+    test = (e) => {
+        console.log(e)
     }
 
     render() {
         return (
-            <form className="form white">
+            <form onSubmit={this.handleSubmit} className="form white" action="#">
                 <h5 className="form-title grey-text text-darken-3">Sign In</h5>
                 <div className="input-field">
                     <label className="active" htmlFor="email">Email</label>
@@ -31,7 +35,7 @@ export class Login extends Component {
                     <input type="password" id='password' onChange={this.handleChange} />
                 </div>
                 <div className="input-field">
-                    <button onClick="handleSubmit()"className="btn pink lighten-1 z-depth-0">Login</button>
+                    <button className="btn pink lighten-1 z-depth-0">Login</button>
                     <div className='red-text center'>
                     </div>
                 </div>
