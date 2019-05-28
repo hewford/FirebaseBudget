@@ -78,7 +78,7 @@ nav {
   margin-block-start:0px;
   margin-block-end:0px;
   font-size: 18px!important;
-  color: #ec407a !important;
+  /* color: #ec407a !important; */
 }
 
 button {
@@ -240,12 +240,38 @@ body {
   overflow-y: scroll; */
 }
 
+/* .main-section {
+  height:
+} */
+.collection-overflow {
+  overflow: hidden;
+  overflow-y: scroll;
+  max-height: 140px;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+}
+.collection-overflow::-webkit-scrollbar { width: 0 !important }
+
+.overflow-scroll {
+  overflow: hidden;
+  overflow-y: scroll;
+  height: calc(100vh - 150px);
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+}
+
+.overflow-scroll::-webkit-scrollbar { width: 0 !important }
+
 .dash {
   padding-top: 32px;
   padding-bottom: 32px;
   height: calc(100vh - 92px);
   overflow: hidden;
   overflow-y: scroll;
+}
+
+.align-left {
+  text-align: left;
 }
 
 .header-title {

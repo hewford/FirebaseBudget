@@ -9,8 +9,13 @@ import CreateCategory from './components/budget/CreateCategory'
 import Auth from './containers/Auth/Auth'
 import Main from './containers/Main/Main'
 import Drawer from './containers/Drawer/Drawer'
+import 'materialize-css/dist/css/materialize.min.css';
+import M from "materialize-css";
 
 class App extends Component {
+  componentDidMount() {
+    M.AutoInit();
+  }
   render() {
     return (
       <BrowserRouter>

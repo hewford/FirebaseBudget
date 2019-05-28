@@ -5,6 +5,7 @@ import Dashboard from './Home/Dashboard'
 import CategoryList from './Catagories/CategoryList'
 import Category from './ManageCategory/Category'
 import NewExpense from './ManageExpense/NewExpense'
+import EditExpense from './ManageExpense/EditExpense'
 import selectPage from '../../helpers/selectPage'
 
 export default class Main extends Component {
@@ -22,6 +23,7 @@ export default class Main extends Component {
                 <Switch>
                     <Route exact path='/' component={Dashboard}/>
                     <Route path='/new-expense/:id' component={NewExpense}/>
+                    <Route path='/edit-expense/:id/:expense' component={EditExpense}/>
                     <Route exact path='/categories' component={CategoryList}/>
                     <Route exact path='/new-category' component={Category}/>
                     <Route
