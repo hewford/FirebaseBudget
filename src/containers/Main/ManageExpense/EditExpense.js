@@ -19,7 +19,6 @@ class EditExpense extends React.Component {
 
 	componentWillMount() {
         this.category = categories[Number(this.props.match.params.id) - 1]; // TODO: to mapStateToProps
-        console.log(this)
 		// this.setState({expenses: this.props.expenses})
     }
 
@@ -52,7 +51,6 @@ class EditExpense extends React.Component {
 	}
 
 	handleChange = (e) => {
-        console.log(e)
 		e.preventDefault();
 		this.setState({
             [e.target.id]: e.target.value
@@ -97,7 +95,7 @@ class EditExpense extends React.Component {
 
         const style = {color: category.color}
         const today = new Date().toJSON().replace(/T.*/, '')
-        console.log(this.state)
+		// TODO: date picker max
 
 		return(
 			<div className="container center main-section" >

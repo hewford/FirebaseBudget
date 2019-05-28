@@ -17,7 +17,6 @@ class NewExpense extends React.Component {
 
 	componentWillMount() {
         this.category = categories[Number(this.props.match.params.id) - 1]; // TODO: to mapStateToProps
-        console.log(this)
 		// this.setState({expenses: this.props.expenses})
 	}
 

@@ -3,18 +3,36 @@ import { withRouter } from 'react-router-dom'
 import './categoryExpenseButton.css'
 
 export class CategoryExpenseButton extends Component {
-    handleClick =() => {
-        console.log(`clicked ${this.props.category.name}`)
-        this.props.history.push(`/new-expense/${this.props.category.id}`)
-        // route to entering a new expense
+    constructor(props) {
+        super(props)
+
+        this.holding = false
+        this.handleClick = this.handleClick.bind(this)
+        this.handleMouseUp = this.handleMouseUp.bind(this)
     }
+
+    handleClick = (e) => {
+        this.holding = true
+        setTimeout(() => {
+            if (this.holding) {
+                this.props.history.push(`/expenses/${this.props.category.id}`)
+            } else {
+                this.props.history.push(`/new-expense/${this.props.category.id}`)
+            }
+        }, 400)
+    }
+
+    handleMouseUp = () => {
+        this.holding = false
+    }
+
 
     render() {
         const { color, name } = this.props.category
         const style = { color }
         return (
             <div className="col s6">
-                <div onClick={this.handleClick} className={`card white ${this.props.offset}offset-vertical`}>
+                <div onTouchStart={this.handleClick} onTouchEnd={this.handleMouseUp} className={`card white ${this.props.offset}offset-vertical`}>
                     {/* <span className="float-right">...</span> */}
                     <div className="card-content black-text">
                         <div className="card-title" style={style}>
@@ -27,7 +45,5 @@ export class CategoryExpenseButton extends Component {
         )
     }
 }
-// renders category title, budget balance
-// short press routes to NewExpense (with params: category id)
-// long press routes to ExpenseList (with params: category id)
+
 export default withRouter(CategoryExpenseButton)

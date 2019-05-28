@@ -14,12 +14,10 @@ export class Login extends Component {
         })
     }
     handleSubmit = (e) => {
-        console.log('hi')
         e.preventDefault();
         // this.props.signIn(this.state)
     }
     test = (e) => {
-        console.log(e)
     }
 
     render() {

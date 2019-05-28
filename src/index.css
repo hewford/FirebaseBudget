@@ -70,6 +70,32 @@ nav {
   /* background-color: #ec407a; */
 }
 
+.non-active-month {
+  position: relative;
+  background-color: white;
+  box-shadow: 1px 2px 5px 1px rgba(0,0,0,0.50)!important;
+  padding: 8px;
+  margin: 8px;
+  border-radius: 2px;
+  width: calc(100% - 16px);
+  font-family: Helvetica-Bold;
+  font-size: 22px;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.active-month {
+  position: relative;
+  padding: 8px;
+  margin: 8px;
+  border-radius: 2px;
+  width: calc(100% - 16px);
+  font-family: Helvetica-Bold;
+  font-size: 22px;
+  letter-spacing: 0;
+  text-align: center;
+}
+
 .relative {
   position: relative;
 }
