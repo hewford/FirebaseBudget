@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import './categoryExpenseButton.css';
+import { withRouter } from 'react-router-dom'
+import './categoryExpenseButton.css'
 
 export class CategoryExpenseButton extends Component {
     handleClick =() => {
         console.log(`clicked ${this.props.category.name}`)
+        this.props.history.push(`/new-expense/${this.props.category.id}`)
         // route to entering a new expense
     }
 
@@ -28,4 +30,4 @@ export class CategoryExpenseButton extends Component {
 // renders category title, budget balance
 // short press routes to NewExpense (with params: category id)
 // long press routes to ExpenseList (with params: category id)
-export default CategoryExpenseButton
+export default withRouter(CategoryExpenseButton)

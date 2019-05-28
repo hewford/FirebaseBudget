@@ -60,6 +60,16 @@ nav {
   border-radius: 15%;
 }
 
+.close-drawer {
+  position: absolute;
+  width: 15vw;
+  right: 0;
+  top: 80px;
+  height: calc(100vh - 80px);
+  z-index: 15;
+  /* background-color: #ec407a; */
+}
+
 .relative {
   position: relative;
 }
@@ -71,6 +81,10 @@ nav {
   color: #ec407a !important;
 }
 
+button {
+  margin-left: 4px!important;
+  margin-right: 4px!important;
+}
 /* .pick-color-btn {
   height: 100px;
 } */
@@ -84,7 +98,7 @@ nav {
   font-size: 21px!important;
 }
 
-.location-input{
+.location-input, .description-input{
   font-size: 18px;
 }
 
@@ -102,6 +116,9 @@ nav {
   font-weight: bold!important;
 }
 
+.input-field {
+  margin-top: 0!important
+}
 
 .color-pick {
   margin-top: 24px;
@@ -115,8 +132,8 @@ nav {
 }
 
 .mx-1{
-  margin-left: 8px;
-  margin-right: 8px;
+  margin-left: 8px!important;
+  margin-right: 8px!important;
 }
 
 .mx-2{
@@ -216,6 +233,7 @@ body {
 }
 
 .dashboard {
+  position: relative;
   /* margin-top: 24px; */
   /* height: calc(100vh);
   overflow: hidden;
