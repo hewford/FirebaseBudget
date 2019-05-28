@@ -21,7 +21,7 @@ export default class Main extends React.Component {
 		};
     }
     
-    componentWillMount = async() => {
+	componentWillMount = async() => {
 		const response = await apiFetch();
 		if (response) {
 			const categories = response.data.categories;

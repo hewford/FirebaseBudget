@@ -2,12 +2,17 @@ import React, { Component } from 'react'
 import './categoryExpenseButton.css';
 
 export class CategoryExpenseButton extends Component {
+    handleClick =() => {
+        console.log(`clicked ${this.props.category.name}`)
+        // route to entering a new expense
+    }
+
     render() {
         const { color, name } = this.props.category
         const style = { color }
         return (
             <div className="col s6">
-                <div className={`card white ${this.props.offset}offset-vertical`}>
+                <div onClick={this.handleClick} className={`card white ${this.props.offset}offset-vertical`}>
                     {/* <span className="float-right">...</span> */}
                     <div className="card-content black-text">
                         <div className="card-title" style={style}>

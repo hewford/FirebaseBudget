@@ -7,9 +7,11 @@ class Drawer extends Component {
     logOut = () => {
         this.props.history.push('/signin')
         selectPage('slidezero')
-        // const el = document.getElementById('page-container')
-        // el.className = 'slidezero'
-        // this.props.signOut()
+    }
+
+    toCategoriesList = () => {
+        this.props.history.push('/categories')
+        selectPage('slideone')
     }
 
     render() {
@@ -17,7 +19,7 @@ class Drawer extends Component {
             <div id="drawer" className="page-drawer">
                 <Link to="new-category" className="drawer-item">New Category</Link>
                 <div className="break-line"/>
-                <Link to="categories" className="drawer-item">Manage Categories</Link>
+                <span onClick={this.toCategoriesList} className="drawer-item">Manage Categories</span>
                 <div className="break-line"/>
                 <span onClick={this.logOut} className="drawer-item">Logout</span>
             </div>
