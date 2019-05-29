@@ -1,7 +1,8 @@
 html{
   min-height: 100vh;
   min-width: 100vw;
-  background-color: darkcyan;
+  background-image: url("loginbackground.png");
+  /* background-color: darkcyan; */
 }
 
 body {
@@ -14,6 +15,7 @@ body {
   /* background-color: #6898f8; */
   /* background-color: darkcyan; */
   /* min-height: calc(100vh - 56px); */
+  background-image: url("loginbackground.png");
   min-width: 100vw;
 }
 
@@ -384,3 +386,12 @@ content: "";
 display: table;
 clear: both;
 }
+
+.disable_text_highlighting {
+  -webkit-user-select: none; /* Webkit */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE 10  */
+  /* Currently not supported in Opera but will be soon */
+  -o-user-select: none;
+  user-select: none;
+  }

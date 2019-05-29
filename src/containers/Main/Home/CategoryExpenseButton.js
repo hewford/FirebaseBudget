@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
+import _ from 'lodash'
 import './categoryExpenseButton.css'
 
 export class CategoryExpenseButton extends Component {
@@ -7,23 +8,25 @@ export class CategoryExpenseButton extends Component {
         super(props)
 
         this.holding = false
-        this.handleClick = this.handleClick.bind(this)
+        this.handleMouseDown = this.handleMouseDown.bind(this)
         this.handleMouseUp = this.handleMouseUp.bind(this)
     }
 
-    handleClick = (e) => {
+    handleMouseDown = (e) => {
         this.holding = true
+        e.currentTarget.className += 'active'
         setTimeout(() => {
             if (this.holding) {
                 this.props.history.push(`/expenses/${this.props.category.id}`)
-            } else {
-                this.props.history.push(`/new-expense/${this.props.category.id}`)
             }
         }, 400)
+        return false;
     }
 
-    handleMouseUp = () => {
+    handleMouseUp = (e) => {
+        e.currentTarget.className = e.currentTarget.className.replace('active', '')
         this.holding = false
+        this.props.history.push(`/new-expense/${this.props.category.id}`)
     }
 
 
@@ -32,7 +35,7 @@ export class CategoryExpenseButton extends Component {
         const style = { color }
         return (
             <div className="col s6">
-                <div onTouchStart={this.handleClick} onTouchEnd={this.handleMouseUp} className={`card white ${this.props.offset}offset-vertical`}>
+                <div onTouchStart={this.handleMouseDown} onTouchEnd={this.handleMouseUp} className={`card white ${this.props.offset}offset-vertical `}>
                     {/* <span className="float-right">...</span> */}
                     <div className="card-content black-text">
                         <div className="card-title" style={style}>

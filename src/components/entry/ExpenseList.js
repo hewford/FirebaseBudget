@@ -65,7 +65,7 @@ class ExpenseList extends React.Component {
             <div>
 				{this.state.expenses.map((expense, index) => {
                     const date = new Date(expense.date.seconds * 1000).toDateString()
-					if (this.state.edit == index) {
+					if (this.state.edit === index) {
                         let n = String(expense.spent)
                         let value = Number(n).toLocaleString('en');
                         if(value === '0') {

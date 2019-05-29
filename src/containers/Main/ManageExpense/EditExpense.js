@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
+import formatToDollar from '../../../helpers/formatToDollar'
 import { categories } from '../../../tempStubs'
 import * as moment from 'moment';
 
@@ -80,18 +81,7 @@ class EditExpense extends React.Component {
 
 		const { category } = this;
 
-		let n = String(this.state.spent)
-		let value = Number(n).toLocaleString('en');
-		if(value === '0') {
-			value = ''
-		}
-		else if(value.indexOf('.') === -1) {
-			value += '.00'
-		}
-		else if(n[n.length-1] === '0' && value.length > 1) {
-			value += 0
-		}
-        value = '$'+ value
+		const value = formatToDollar(this.state.spent)
 
         const style = {color: category.color}
         const today = new Date().toJSON().replace(/T.*/, '')

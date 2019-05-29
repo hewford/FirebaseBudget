@@ -18,9 +18,10 @@ export class ExpenseList extends Component {
     }
 
     render() {
-        const history = Object.values(this.category.transactionHistory)
+        // debugger
+        const history = Object.values(this.category.transactionHistory || {})
         return (
-            <div>
+            <div className='disable_text_highlighting'>
                 {
                     history.map((month) => {
                         if (month.month === this.state.selected) {
