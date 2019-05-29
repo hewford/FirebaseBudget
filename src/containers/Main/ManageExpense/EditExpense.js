@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
+import _ from 'lodash'
 import formatToDollar from '../../../helpers/formatToDollar'
 import { categories } from '../../../tempStubs'
 import * as moment from 'moment';
@@ -20,7 +21,12 @@ class EditExpense extends React.Component {
 
 	componentWillMount() {
         this.category = categories[Number(this.props.match.params.id) - 1]; // TODO: to mapStateToProps
-		// this.setState({expenses: this.props.expenses})
+		this.expense = _.values(this.category.transactionHistory).find(month => {
+			return month.expenses.find(expense => expense.id === this.props.match.params.expense)
+		}).expenses.find(expense => expense.id === this.props.match.params.expense)
+
+		this.setState(this.expense)
+		console.log(this.expense)
     }
 
 	handleSubmit = async(e) => {

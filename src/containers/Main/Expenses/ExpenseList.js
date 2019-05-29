@@ -34,6 +34,7 @@ export class ExpenseList extends Component {
                                                 <ExpenseListItem
                                                     key={`expense-${i}`}
                                                     expense={expense}
+                                                    categoryId={this.category.id}
                                                 />
                                             )
                                         })

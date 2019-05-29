@@ -1,19 +1,25 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-
+import { withRouter } from 'react-router-dom'
 import logo from '../budgetlogo.png'
 import selectPage from '../helpers/selectPage'
 
-export default class Header extends Component {
+class Header extends Component {
     toggleDrawer = () => {
         selectPage('slideone', 'slidetwo')
+    }
+
+    goBack = () => {
+        if (this.props.location.pathname !== "/") {
+            this.props.history.goBack()
+        }
     }
 
     render() {
         return (
             <div className="app-header">
                 <div>
-                    <img src={logo} alt="logo" className="header-logo" />
+                    <img onClick={this.goBack} src={logo} alt="logo" className="header-logo" />
                 </div>
                 <Link to='/' className='header-title'>
                     App Title
@@ -23,6 +29,8 @@ export default class Header extends Component {
         )
     }
 }
+
+export default withRouter(Header)
 
 // exists on all routes, but requires auth
 // logo for back button?
