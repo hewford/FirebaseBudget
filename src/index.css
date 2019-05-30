@@ -41,6 +41,18 @@ nav {
   font-family: 'Trebuchet MS'
 }
 
+.btn {
+  background: #EE006E;
+  border: 1px solid #979797!important;
+  border-radius: 2px 2px 2px 0 2px;
+
+  font-family: Helvetica;
+  font-size: 24px;
+  color: #FFFFFF;
+  letter-spacing: 0;
+  text-align: center;
+}
+
 .spent-label {
   bottom: 8px!important;
   font-size: 16px!important;
@@ -175,8 +187,13 @@ button {
 }
 
 .my-2{
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin-top: 16px!important;
+  margin-bottom: 16px!important;
+}
+
+.my-3{
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .bold {
@@ -268,9 +285,9 @@ body {
   overflow-y: scroll; */
 }
 
-/* .main-section {
-  height:
-} */
+.main-section {
+  height: calc(100vh - 100px);
+}
 .collection-overflow {
   overflow: hidden;
   overflow-y: scroll;
@@ -283,7 +300,7 @@ body {
 .overflow-scroll {
   overflow: hidden;
   overflow-y: scroll;
-  height: calc(100vh - 150px);
+  /* max-height: calc(100vh - 150px); */
   overflow: -moz-scrollbars-none;
   -ms-overflow-style: none;
 }
@@ -323,7 +340,7 @@ body {
 }
 
 .card {
-  height: 100px!important;
+  min-height: 80px!important;
   /* border-radius: 2% 2% 2% 30%!important; */
   position: relative;
   box-shadow: 1px 2px 5px 1px rgba(0,0,0,0.50)!important;
@@ -377,6 +394,7 @@ body {
 }
 
 .form{
+  max-height: calc(100vh - 150px);
   padding:16px;
 }
 

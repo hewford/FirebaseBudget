@@ -26,7 +26,6 @@ class EditExpense extends React.Component {
 		}).expenses.find(expense => expense.id === this.props.match.params.expense)
 
 		this.setState(this.expense)
-		console.log(this.expense)
     }
 
 	handleSubmit = async(e) => {
@@ -131,29 +130,6 @@ class EditExpense extends React.Component {
                             onFocus={moveCursorToEnd}
                             onChange={this.handleChange}
 						/>
-					</div>
-
-					<p>
-						<label onClick={this.toggleRememberLocation}>
-							<input type="checkbox" onChange={this.toggleRememberLocation} className="filled-in" checked={this.state.rememberLocation} />
-							<span>Remember Location</span>
-						</label>
-					</p>
-
-                    <div className="col s12 collection-overflow">
-                        <ul class="collection">
-						{category.locations ? category.locations.map((location, index) => {
-                            return (
-                                <li class="collection-item">
-                                    <div className="align-left">{location}
-                                        <span class="secondary-content">
-                                            <i id={location} onClick={this.removeLocation} class="material-icons black-text">delete</i>
-                                        </span>
-                                    </div>
-                                </li>
-                            )
-                        }) : null}
-                        </ul>
 					</div>
 
 					<div className="input-field col s12">

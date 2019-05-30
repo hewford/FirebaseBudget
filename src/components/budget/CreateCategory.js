@@ -73,7 +73,6 @@ class CreateCategory extends Component {
               })}
             </div>
           )
-          
         })}
       </div>
     )

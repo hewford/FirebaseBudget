@@ -14,10 +14,15 @@ class Drawer extends Component {
         selectPage('slideone')
     }
 
+    toNewCategory = () => {
+        this.props.history.push('/new-category')
+        selectPage('slideone')
+    }
+
     render() {
         return (
             <div id="drawer" className="page-drawer">
-                <Link to="new-category" className="drawer-item">New Category</Link>
+                <span onClick={this.toNewCategory}  className="drawer-item">New Category</span>
                 <div className="break-line"/>
                 <span onClick={this.toCategoriesList} className="drawer-item">Manage Categories</span>
                 <div className="break-line"/>
