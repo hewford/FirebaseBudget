@@ -1,4 +1,5 @@
 export default (slide, orThisSlide) => {
+    if (!document.getElementById('page-container')) return null
     const el = document.getElementById('page-container')
     const closeDrawer = document.getElementById('close-drawer')
     if (orThisSlide) {

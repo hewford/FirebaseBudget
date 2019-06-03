@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
 import './login.css';
 import selectPage from '../../helpers/selectPage'
+import { signIn } from '../../store/actions/authActions'
 
 export class Login extends Component {
     state = {
@@ -17,15 +19,16 @@ export class Login extends Component {
     }
     handleSubmit = (e) => {
         e.preventDefault()
-        selectPage('slideone')
-        this.setState({auth: true}) // TODO: hook up firebase
-        // this.props.signIn(this.state)
-    }
-    test = (e) => {
+        this.props.signIn(this.state)
     }
 
+
     render() {
-        if (this.state.auth) return <Redirect to="/" />
+        const { auth } = this.props
+        if (auth.uid) {
+            // selectPage('slideone')
+            // return <Redirect to="/" />
+        }
 
         return (
             <form onSubmit={this.handleSubmit} className="form white" action="#">
@@ -53,7 +56,21 @@ export class Login extends Component {
     }
 }
 
-export default Login
+const mapStateToProps = (state) => {
+    return {
+        authError: state.auth.authError,
+        auth: state.firebase.auth
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signIn: (creds) => dispatch(signIn(creds))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
+
 
 // route: login
 // copy logic from version 1

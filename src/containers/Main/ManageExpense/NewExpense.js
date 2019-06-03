@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
+import { firestoreConnect } from 'react-redux-firebase'
+import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
+import _ from 'lodash'
 import { Redirect } from 'react-router-dom'
 import formatToDollar from '../../../helpers/formatToDollar'
 import { categories } from '../../../tempStubs'
@@ -64,7 +67,9 @@ class NewExpense extends React.Component {
 	checkAuth = (props) => {
 	// 	const { auth, category } = this.props
 	// 	if (!auth.uid) return { render: <Redirect to='/signin' /> }
-		if (this.state.submitted || !this.category) return { render: <Redirect to='/' /> }
+		if (this.state.submitted || !this.props.category) {
+			return { render: <Redirect to='/' /> }
+		}
 		return null
 	}
 
@@ -72,16 +77,16 @@ class NewExpense extends React.Component {
 		const checkAuth = this.checkAuth()
 		if (checkAuth) return checkAuth.render
 
-		const { category } = this;
+		const { category } = this.props || this;
 
 		const value = formatToDollar(this.state.spent)
 
-        const style = {color: category.color}
+        // const style = {color: category.color}
 
 		return(
 			<div className="container center">
 				<form className="form white row relative">
-					<h5 className={`${category.color}`}> Expense Entry: <span style={style}>{category.name}</span></h5>
+					<h5 className={`${category.color}`}> Expense Entry: <span>{category.name}</span></h5>
 
 					<div className="input-field input-entry offset-s3 col s6">
 						<p className="input-label left">Amount:</p>
@@ -159,5 +164,30 @@ function moveCursorToEnd(e) {
     // list of remembered locations as tags
 // Back Button --> routes to Home
 // Submit sends new expense list (with added expense) to firebase
+const mapStateToProps = (state, props) => {
+	const category = _.get(state.firestore.ordered, `budgets[0].categories.${props.match.params.id
+    }`, null)
 
-export default withRouter(NewExpense)
+    const { auth } = state.firebase
+    return { auth, category }
+}
+
+//   const mapDispatchToProps = dispatch => {
+//       return {
+//       closePostAlert: (expense) => dispatch(closePostAlert(expense)),
+//       updateForNewMonth: (data) => dispatch(updateForNewMonth(data))
+//       }
+//   }
+
+export default compose(
+    connect(mapStateToProps, null),
+    firestoreConnect( props => {
+        const user = props.auth
+        if (!user.uid) return []
+        return [
+            {
+                collection: 'budgets'
+            }
+        ]
+    })
+)(withRouter(NewExpense))

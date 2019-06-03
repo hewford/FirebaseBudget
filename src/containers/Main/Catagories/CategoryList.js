@@ -1,13 +1,26 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { firestoreConnect } from 'react-redux-firebase'
+import { compose } from 'redux'
+import _ from 'lodash'
 import CategoryListItem from './CategoryListItem'
 import { categories } from '../../../tempStubs'
 
 export class CategoryList extends Component {
     render() {
+        console.log(this.props)
         return (
-            <div className="dash center-list">
+            <div className="dash center-list relative overflow-scroll">
                 {categories.map((category, index) => {
+                    return (
+                        <CategoryListItem
+                            key={`category-${index}`}
+                            category={category}
+                        />
+                    )
+                })}
+                {_.values(this.props.categories).map((category, index) => {
                     return (
                         <CategoryListItem
                             key={`category-${index}`}
@@ -23,11 +36,23 @@ export class CategoryList extends Component {
     }
 }
 
-export default CategoryList
+const mapStateToProps = (state) => {
+    const categories = _.get(state.firestore.ordered, 'budgets[0].categories')
+    const { auth } = state.firebase
 
-// route: manage category
-// renders category list items
-// gets category list from firebase
-// requres auth to render
+    return { categories, auth }
+}
 
-// click logic exists within each category list item (child component, not here)
+export default compose(
+    connect(mapStateToProps, null),
+    firestoreConnect( props => {
+        const user = props.auth
+        if (!user.uid) return []
+        return [
+            {
+                collection: 'budgets'
+            }
+        ]
+    })
+)(CategoryList)
+// TODO: requres auth to render

@@ -22,7 +22,7 @@ class Header extends Component {
                     <img onClick={this.goBack} src={logo} alt="logo" className="header-logo" />
                 </div>
                 <Link to='/' className='header-title'>
-                    App Title
+                    Simply Budget
                 </Link>
                 <i className="material-icons header-menu" onClick={this.toggleDrawer}>menu</i>
             </div>

@@ -9,7 +9,7 @@ import EditExpense from './ManageExpense/EditExpense'
 import ExpenseList from './Expenses/ExpenseList'
 import selectPage from '../../helpers/selectPage'
 
-export default class Main extends Component {
+class Main extends Component {
     toggleDrawer = () => {
         selectPage('slideone')
     }
@@ -24,7 +24,7 @@ export default class Main extends Component {
                 <Switch>
                     <Route exact path='/' component={Dashboard}/>
                     <Route path='/new-expense/:id' component={NewExpense}/>
-                    <Route path='/edit-expense/:id/:expense' component={EditExpense}/>
+                    <Route path='/edit-expense/:id/:monthId/:expenseId' component={EditExpense}/>
                     <Route path='/expenses/:id' component={ExpenseList}/>
                     <Route exact path='/categories' component={CategoryList}/>
                     <Route exact path='/new-category' component={Category}/>
@@ -37,3 +37,5 @@ export default class Main extends Component {
         )
     }
 }
+
+export default Main

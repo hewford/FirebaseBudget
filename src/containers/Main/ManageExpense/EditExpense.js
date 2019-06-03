@@ -1,17 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { Redirect } from 'react-router-dom'
+import { firestoreConnect } from 'react-redux-firebase'
+import { compose } from 'redux'
+import { withRouter, Redirect } from 'react-router-dom'
 import _ from 'lodash'
+import MomentUtils from '@date-io/moment';
+import './expense.css'
 import formatToDollar from '../../../helpers/formatToDollar'
 import { categories } from '../../../tempStubs'
 import * as moment from 'moment';
+import { DatePicker } from "@material-ui/pickers";
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 class EditExpense extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state= {
-			spent: '',
+			amount: '',
             location: '',
             description: '',
             date: '',
@@ -19,13 +24,20 @@ class EditExpense extends React.Component {
 		}
 	}
 
-	componentWillMount() {
-        this.category = categories[Number(this.props.match.params.id) - 1]; // TODO: to mapStateToProps
-		this.expense = _.values(this.category.transactionHistory).find(month => {
-			return month.expenses.find(expense => expense.id === this.props.match.params.expense)
-		}).expenses.find(expense => expense.id === this.props.match.params.expense)
+	componentWillReceiveProps(nextProps) {
+		const { expense } = _.cloneDeep(nextProps)
+		if (expense) {
+			expense.date = new Date(expense.date.seconds * 1000)
+			this.setState(expense)
+		}
+	}
 
-		this.setState(this.expense)
+	componentDidMount() {
+		const { expense } = _.cloneDeep(this.props)
+		if (expense) {
+			expense.date = new Date(expense.date.seconds * 1000)
+			this.setState(expense)
+		}
     }
 
 	handleSubmit = async(e) => {
@@ -41,18 +53,11 @@ class EditExpense extends React.Component {
         this.props.history.push('/')
 	}
 
-	toggleRememberLocation = (e) => {
-		e.preventDefault();
-		this.setState({
-			rememberLocation: !this.state.rememberLocation
-		})
-	}
-
 	handleSpentChange = (e) => {
 		e.preventDefault();
 		let value = (Number(e.target.value.replace(/[^0-9]+/g, ''))/100).toFixed(2)
 		this.setState({
-			spent: value
+			amount: value
 		});
 	}
 
@@ -63,45 +68,49 @@ class EditExpense extends React.Component {
         })
 	}
 
-	setLocation = (e) => {
-		this.setState({
-			location: e.target.id
-		})
-    }
-    
-    removeLocation = (e) => {
-        console.log(`removing ${e.target.id}`)
-    }
+	handleDateChange = (date) => {
+		this.setState({ date })
+	}
 
 	checkAuth = (props) => {
-	// 	const { auth, category } = this.props
+		const { auth, category } = this.props
+		if (!category) return { render: (<div></div>)}
 	// 	if (!auth.uid) return { render: <Redirect to='/signin' /> }
-		if (this.state.submitted || !this.category) return { render: <Redirect to='/' /> }
+		if (this.state.submitted) return { render: <Redirect to='/' /> }
 		return null
 	}
 
 	render() { // TODO: CLEANUP
+		// console.log(this.state)
+		// return(<div></div>)
 		const checkAuth = this.checkAuth()
 		if (checkAuth) return checkAuth.render
 
-		const { category } = this;
+		const { category } = this.props;
 
-		const value = formatToDollar(this.state.spent)
+		const value = formatToDollar(this.state.amount)
 
-        const style = {color: category.color}
+        // const style = {color: category.color}
         const today = new Date().toJSON().replace(/T.*/, '')
 		// TODO: date picker max
-
+		console.log(this.state)
 		return(
+			<MuiPickersUtilsProvider utils={MomentUtils}>
 			<div className="container center main-section" >
 				<form className="form white row relative overflow-scroll">
-					<h5 className={`${category.color}`}> Edit Entry: <span style={style}>{category.name}</span></h5>
+					<h5 className={`${category.color}`}> Edit Entry: <span>{category.name}</span></h5>
 
                     <div className="input-field input-entry offset-s2 col s8">
-						<p className="input-label left">Date:</p>
-                        <input type="text" id="date" className="datepicker"
-                            value={this.state.date}
-                        />
+						<p className="input-label left relative">Date:</p>
+						<br />
+						<DatePicker
+							disableFuture
+							autoOk
+							className="custom-date-picker"
+							value={this.state.date}
+							onChange={this.handleDateChange}
+							animateYearScrolling
+						/>
 					</div>
 
 					<div className="input-field input-entry offset-s2 col s8">
@@ -139,6 +148,7 @@ class EditExpense extends React.Component {
 					</div>
 				</form>
 			</div>
+			</MuiPickersUtilsProvider>
 		)
 	}
 }
@@ -164,7 +174,39 @@ function moveCursorToEnd(e) {
 // Back Button --> routes to Home
 // Submit sends new expense list (with added expense) to firebase
 
-export default withRouter(EditExpense)
+const mapStateToProps = (state, props) => {
+	const { id, monthId, expenseId } = props.match.params
+	const category = _.get(state.firestore.ordered, `budgets[0].categories.${id}`, null)
+	const expense = _.get(
+		state.firestore.ordered,
+		`budgets[0].categories.${id}.transactionHistory.${monthId}.transactions`,
+	[]).find(expense => expense.id === expenseId)
+
+	// console.log(history)
+	const { auth } = state.firebase
+	console.log(expense)
+    return { auth, category, expense }
+}
+
+//   const mapDispatchToProps = dispatch => {
+//       return {
+//       closePostAlert: (expense) => dispatch(closePostAlert(expense)),
+//       updateForNewMonth: (data) => dispatch(updateForNewMonth(data))
+//       }
+//   }
+
+export default compose(
+    connect(mapStateToProps, null, null),
+    firestoreConnect( props => {
+        const user = props.auth
+        if (!user.uid) return []
+        return [
+            {
+                collection: 'budgets'
+            }
+        ]
+    })
+)((EditExpense))
 // takes category_uid and expense id from params to find expense
 // renders expense data in input fields
 // Back Button --> routes to Expense List

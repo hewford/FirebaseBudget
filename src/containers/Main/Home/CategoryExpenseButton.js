@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import _ from 'lodash'
 import './categoryExpenseButton.css'
 
 export class CategoryExpenseButton extends Component {
@@ -31,17 +30,16 @@ export class CategoryExpenseButton extends Component {
 
 
     render() {
-        const { color, name } = this.props.category
+        const { color, name, balance } = this.props.category
         const style = { color }
         return (
             <div className="col s6">
                 <div onTouchStart={this.handleMouseDown} onTouchEnd={this.handleMouseUp} className={`card white ${this.props.offset}offset-vertical `}>
-                    {/* <span className="float-right">...</span> */}
                     <div className="card-content black-text">
                         <div className="card-title" style={style}>
                             { name }
                         </div>
-                        <p className="card-body">$data</p>
+                        <p className="card-body">${balance}</p>
                     </div>
                 </div>
             </div>

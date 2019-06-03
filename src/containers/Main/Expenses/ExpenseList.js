@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { firestoreConnect } from 'react-redux-firebase'
+import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
+import _ from 'lodash'
 import ExpenseListItem from './ExpenseListItem'
 import { categories } from '../../../tempStubs'
 import * as moment from 'moment'
@@ -19,22 +23,26 @@ export class ExpenseList extends Component {
 
     render() {
         // debugger
-        const history = Object.values(this.category.transactionHistory || {})
+        // const history = Object.values(this.category.transactionHistory || {})
+        if (!this.props.category) return null
+        const history = _.toPairs(this.props.category.transactionHistory)
         return (
             <div className='disable_text_highlighting'>
                 {
-                    history.map((month) => {
+                    history.map((data) => {
+                        const month = data[1]
                         if (month.month === this.state.selected) {
                             return (
                                 <div key={month.month}>
                                     <div className='active-month'> {month.month} </div>
                                     {
-                                        month.expenses.map((expense, i) => {
+                                        month.transactions.map((transaction, i) => {
                                             return (
                                                 <ExpenseListItem
                                                     key={`expense-${i}`}
-                                                    expense={expense}
-                                                    categoryId={this.category.id}
+                                                    expense={transaction}
+                                                    monthId={data[0]}
+                                                    categoryId={this.props.category.id}
                                                 />
                                             )
                                         })
@@ -53,7 +61,31 @@ export class ExpenseList extends Component {
     }
 }
 
-export default withRouter(ExpenseList)
+// export default withRouter(ExpenseList)
+
+const mapStateToProps = (state, props) => {
+    // debugger
+    const category = _.get(state.firestore.ordered, `budgets[0].categories.${props.match.params.id
+    }`, null)
+    // const history = _.get(categories, 'eatingOut.transactionHistory')
+
+    const { auth } = state.firebase
+    return { auth, category }
+}
+
+export default compose(
+    connect(mapStateToProps, null),
+    firestoreConnect( props => {
+        const user = props.auth
+        if (!user.uid) return []
+        return [
+            {
+                collection: 'budgets'
+            }
+        ]
+    })
+)(withRouter(ExpenseList))
+
 
 // route: Expense List
 // renders Current Month Title not as button

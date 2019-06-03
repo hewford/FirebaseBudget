@@ -1,0 +1,55 @@
+.custom-date-picker input {
+    width: 100%!important;
+    /* border-bottom: pink!important; */
+}
+
+.custom-date-picker {
+    width: 100%;
+}
+
+/* .custom-date-picker .MuiInput-underline:before{
+    border-bottom: 0px!important;
+    content: '';
+} */
+
+.MuiInput-underline:before {
+    transition: 0!important;
+    /* border-bottom: 0px!important; */
+    display:none!important;
+}
+
+.MuiPickersToolbar-toolbar {
+    background-image: linear-gradient(27deg, #F8F8F8, #CBF5FD);
+    color: #4EF3FF!important;
+    background-color: #4EF3FF!important;
+    -webkit-text-fill-color: #4EF3FF;
+    -webkit-text-stroke: 1px rgb(51, 51, 51);
+    text-shadow:
+        3px 3px 0 rgb(51, 51, 51),
+        -1px -1px 0 rgb(51, 51, 51),
+        1px -1px 0 rgb(51, 51, 51),
+        -1px 1px 0 rgb(51, 51, 51),
+        1px 1px 0 rgb(51, 51, 51);
+}
+
+.MuiPickersToolbar-toolbar h4 {
+    -webkit-text-fill-color: #4EF3FF;
+    -webkit-text-stroke: 1.25px rgb(51, 51, 51);
+    text-shadow:
+        1px 1px 0 rgb(51, 51, 51),
+        -0.8px -0.8px 0 rgb(51, 51, 51),
+        0.8px -0.8px 0 rgb(51, 51, 51),
+        -0.8px 0.8px 0 rgb(51, 51, 51),
+        0.8px 0.8px 0 rgb(51, 51, 51);
+}
+
+.MuiPickersDay-daySelected {
+    background-color: rgb(166, 219, 230)!important;
+    color: black!important;
+}
+/* 
+.custom-date-picker {
+    position: absolute!important;
+    bottom: 24px!important;
+    right: 0!important;
+} */
