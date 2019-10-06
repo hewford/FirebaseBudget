@@ -6,9 +6,21 @@
     margin-top: -1px!important;
 }
 
-.card {
-    transition: .3s ease-in-out!important;
+.empty-card {
+    transition: .2s ease-in-out!important;
     transform: scale(1); 
+    min-height: 94px!important;
+    position: relative;
+    width: 100%;
+}
+
+.card {
+    transition: .2s ease-in-out!important;
+    transform: scale(1); 
+    min-height: 80px!important;
+    position: relative;
+    box-shadow: 1px 2px 5px 1px rgba(0,0,0,0.50)!important;
+    width: 100%;
 }
 
 .card.active {
@@ -37,7 +49,55 @@
     bottom: 8px;
     right: 8px;
 }
+  
+.card_tooltip {
+    -webkit-animation: fadein .2s;
+}
 
-.card {
-    width: 100%;
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.offset-vertical.card_tooltip {
+    z-index: 20;
+    width: 150px;
+    height: 50px;
+    left: 185px;
+    position: absolute;
+    margin-right: -100px!important;
+}
+
+.nonoffset-vertical.card_tooltip {
+    z-index: 20;
+    left: 150px;
+    width: 150px;
+    height: 50px;
+    position: absolute;
+    margin-right: 100px!important;
+}
+
+#add-deposit {
+    display: block;
+    width:40px;
+    height:40px;
+    font-size: 40px;
+    color: green;
+}
+
+#view-transactions-icon {
+    display: block;
+    width:40px;
+    height:40px;
+    font-size: 40px;
+    color: blue;
+}
+
+#add-deposit.active {
+    transform: scale(1.1); 
+
+}
+
+.hidden {
+    display: none;
 }

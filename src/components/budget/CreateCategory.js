@@ -24,7 +24,6 @@ class CreateCategory extends Component {
     e.preventDefault();
     const { budget, color, category } = this.state
     if (id) {
-      console.log(id)
       this.props.editCategory(budget, color, category, id)
     } else {
       this.props.createCategory({ budget, color, category })

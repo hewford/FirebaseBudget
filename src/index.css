@@ -110,6 +110,33 @@ nav {
   text-align: center;
 }
 
+.non-active-year {
+  position: relative;
+  background-color: white;
+  box-shadow: 1px 2px 5px 1px rgba(0,0,0,0.50)!important;
+  padding: 8px;
+  margin: 8px;
+  border-radius: 2px;
+  width: calc(100% - 16px);
+  font-family: Helvetica-Bold;
+  font-size: 22px;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.active-year {
+  position: relative;
+  padding: 8px;
+  margin: 8px;
+  border-radius: 2px;
+  width: calc(100% - 16px);
+  font-family: Helvetica-Bold;
+  font-size: 22px;
+  letter-spacing: 0;
+  text-align: center;
+  font-weight: bold;
+}
+
 .relative {
   position: relative;
 }
@@ -198,6 +225,10 @@ button {
 
 .bold {
   font-weight: bold;
+}
+
+.underline-text {
+  text-decoration: underline;
 }
 
 .center-item {
@@ -313,6 +344,7 @@ body {
 .overflow-scroll::-webkit-scrollbar { width: 0 !important }
 
 .dash {
+  transition: .2s ease-in-out!important;
   padding-top: 32px;
   padding-bottom: 32px;
   height: calc(100vh - 92px);
@@ -349,13 +381,6 @@ body {
 
 .header-logo {
   height: 60px;
-}
-
-.card {
-  min-height: 80px!important;
-  /* border-radius: 2% 2% 2% 30%!important; */
-  position: relative;
-  box-shadow: 1px 2px 5px 1px rgba(0,0,0,0.50)!important;
 }
 
 .col {

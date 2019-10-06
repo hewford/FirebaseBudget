@@ -7,10 +7,15 @@ import _ from 'lodash'
 import ExpenseListItem from './ExpenseListItem'
 import { categories } from '../../../tempStubs'
 import * as moment from 'moment'
+import {
+    getAllMonthsWithTransactions,
+    getTransacationsWithinTimeframe
+} from '../../../methods'
 
 export class ExpenseList extends Component {
     state = {
-        selected: moment().format("MMMM")
+        month: moment().format("MMMM"),
+        year: moment().format("YYYY")
     }
     componentWillMount() {
         this.category = categories[Number(this.props.match.params.id) - 1]; // TODO: to mapStateToProps
@@ -18,43 +23,89 @@ export class ExpenseList extends Component {
     }
 
     handleClick = (e) => {
-        this.setState({selected: e.target.id})
+        this.setState({month: e.target.id})
     }
 
     render() {
-        // debugger
+        
         // const history = Object.values(this.category.transactionHistory || {})
         if (!this.props.category) return null
-        const history = _.toPairs(this.props.category.transactionHistory)
+        const timeframes = getAllMonthsWithTransactions(this.props.category)
+        // debugger
+        const { category } = this.props
+        console.log(timeframes)
         return (
             <div className='disable_text_highlighting'>
                 {
-                    history.map((data) => {
-                        const month = data[1]
-                        if (month.month === this.state.selected) {
+                    Object.entries(timeframes).sort(([a], [b]) => b - a).map(([year, months], i) => {
+                        if (year === this.state.year) {
                             return (
-                                <div key={month.month}>
-                                    <div className='active-month'> {month.month} </div>
-                                    {
-                                        month.transactions.map((transaction, i) => {
+                                <div key={"year-list-"+i}>
+                                    <div className='active-year'> {year} </div>
+                                    {months.map(month => {
+                                        if (month === this.state.month) {
+                                            const transactions = getTransacationsWithinTimeframe(category.transactions, year, month)
+                                                // .sort((a, b) => b.timestamp - a.timestamp)
                                             return (
-                                                <ExpenseListItem
-                                                    key={`expense-${i}`}
-                                                    expense={transaction}
-                                                    monthId={data[0]}
-                                                    categoryId={this.props.category.id}
-                                                />
+                                                <div key={month}>
+                                                    <div className='active-month'> {month} </div>
+                                                    {
+                                                        transactions.map((transaction, i) => {
+                                                            return (
+                                                                <ExpenseListItem
+                                                                    key={`expense-${i}`}
+                                                                    expense={transaction}
+                                                                    month={month}
+                                                                    categoryId={category.id}
+                                                                />
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
                                             )
-                                        })
-                                    }
+                                        } else {
+                                            return (
+                                                <div onClick={this.handleClick} key={month} id={month} className='non-active-month'> {month} </div>
+                                            )
+                                        }
+                                        
+                                    })}
                                 </div>
                             )
                         } else {
                             return (
-                                <div onClick={this.handleClick} key={month.month} id={month.month} className='non-active-month'> {month.month} </div>
+                                <div onClick={this.handleClick} key={"year-list-"+i} id={"non-active-"+year} className='non-active-year'> {year} </div>
                             )
                         }
+                        
+                        // return (<div>{k}<div>{v}</div></div>)
                     })
+                    // history.map((data) => {
+                    //     const month = data[1]
+                    //     if (month.month === this.state.selected) {
+                            // return (
+                            //     <div key={month.month}>
+                            //         <div className='active-month'> {month.month} </div>
+                            //         {
+                            //             month.transactions.map((transaction, i) => {
+                            //                 return (
+                            //                     <ExpenseListItem
+                            //                         key={`expense-${i}`}
+                            //                         expense={transaction}
+                            //                         monthId={data[0]}
+                            //                         categoryId={this.props.category.id}
+                            //                     />
+                            //                 )
+                            //             })
+                            //         }
+                            //     </div>
+                            // )
+                    //     } else {
+                            // return (
+                            //     <div onClick={this.handleClick} key={month.month} id={month.month} className='non-active-month'> {month.month} </div>
+                            // )
+                    //     }
+                    // })
                 }
             </div>
         )
@@ -64,12 +115,19 @@ export class ExpenseList extends Component {
 // export default withRouter(ExpenseList)
 
 const mapStateToProps = (state, props) => {
-    // debugger
-    const category = _.get(state.firestore.ordered, `budgets[0].categories.${props.match.params.id
-    }`, null)
-    // const history = _.get(categories, 'eatingOut.transactionHistory')
-
     const { auth } = state.firebase
+	const budgets = state.firestore.ordered.budgets
+
+	if (!budgets) return { auth }
+	const budget = budgets.find(
+		budget => budget.userId === auth.uid
+	)
+	if (!budget) return { auth }
+
+	const category = budget.categories.find(
+		category => category.id === props.match.params.id
+    ) || null
+
     return { auth, category }
 }
 

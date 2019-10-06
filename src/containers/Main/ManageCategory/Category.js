@@ -4,6 +4,9 @@ import './category.css'
 import formatToDollar from '../../../helpers/formatToDollar'
 import { carryoverText, resetMonthlyText, text_colors } from '../../../helpers/contants'
 import { categories } from '../../../tempStubs'
+import { createCategory } from '../../../store/actions/budgetActions'
+import { connect } from 'react-redux'
+
 
 export class Category extends Component {
     state = {
@@ -23,8 +26,9 @@ export class Category extends Component {
         }
     }
 
-    handleSubmit = (e) => {
+    handleSubmit = async(e) => {
         console.log(`submitting ${this.state.name}`)
+        await this.props.createCategory(this.props.auth.uid, this.state)
         this.setState({submitted: true})
     }
 
@@ -183,7 +187,18 @@ export class Category extends Component {
     }
 }
 
-export default withRouter(Category)
+const mapStateToProps = (state, props) => {
+    const { auth } = state.firebase
+    return { auth }
+}
+  
+const mapDispatchToProps = dispatch => {
+	return {
+		createCategory: (uid, category) => dispatch(createCategory(uid, category))
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Category))
 
 // reads params (params: edit & category_uid)
 // if edit and category_uid, render category data to be edited

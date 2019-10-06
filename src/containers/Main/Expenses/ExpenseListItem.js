@@ -17,16 +17,14 @@ export class ExpenseListItem extends Component {
         }, 600)
     }
 
-    render() { // TODO: handle spent being green for increases in balance
-        const { date, location, amount, description } = this.props.expense
-        console.log(this.props)
+    render() {
+        const { timestamp, location, amount, description, deposit } = this.props.expense
         return (
             <div onClick={this.handleClick} className={`card white`}>
-                {/* <span className="float-right">...</span> */}
                 <div className="card-content black-text">
-                    <p className="category-summary"><span className="bold">Date: </span>${moment(date.seconds*1000).format('l')}</p>
-                        <p className='summary-spent red-text text-darken-2'>${amount}</p>
-                    <p className="category-summary"><span className="bold">Location: </span>${location}</p>
+                    <p className="category-summary"><span className="bold">Date: </span>{moment(timestamp).format('l')}</p>
+                        <p className={`summary-spent ${deposit ? "green-text" : "red-text" } text-darken-2`}>${amount}</p>
+                    <p className="category-summary"><span className="bold">Location: </span>{location}</p>
                     <p className="category-summary"><span className="bold">Description: </span>{description}</p>
                 </div>
             </div>
@@ -35,6 +33,3 @@ export class ExpenseListItem extends Component {
 }
 
 export default withRouter(ExpenseListItem)
-
-// renders expense summary
-// clicking routes to edit expense (parameters: category_uid and expense_id)

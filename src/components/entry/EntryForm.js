@@ -25,6 +25,7 @@ class EntryForm extends React.Component {
 	handleSubmit = async(e) => {
 		e.preventDefault();
 		const {id} = this.props.match.params
+		debugger
 		await this.props.addExpense({id, ...this.state})
 		this.setState({submitted: true})
 	}
@@ -148,29 +149,6 @@ class EntryForm extends React.Component {
 				</form>
 
 				<ExpenseList expenses={this.props.expenses}/>
-
-				{/* {this.state.expenses.map((expense, index) => {
-					const date = new Date(expense.date.seconds * 1000).toDateString()
-					if (this.state.edit == index) {
-						console.log(expense)
-						return(
-							<div>Editing...</div>
-						)
-					} else {
-						return(
-							<div key={`expense-list-${index}`}className="card">
-							<span onClick={this.editExpense} data-id={index} className="grey-text text-darken-3 options-button">edit</span>
-								<div className="card-content">
-									<span className={`card-title`}>{date}</span>
-									<span>Spent: ${(expense.spent)}</span>
-									<br/>
-									<span>{expense.location}</span>
-								</div>
-							</div>
-						)
-					}
-				})} */}
-				
 			</div>
 		)
 	}

@@ -9,7 +9,6 @@ import { categories } from '../../../tempStubs'
 
 export class CategoryList extends Component {
     render() {
-        console.log(this.props)
         return (
             <div className="dash center-list relative overflow-scroll">
                 {categories.map((category, index) => {

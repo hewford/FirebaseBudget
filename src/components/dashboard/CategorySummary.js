@@ -11,7 +11,6 @@ export class CategorySummary extends Component {
 
     render() {
         const { category } = this.props
-        console.log({budgetOffSet: category.budgetOffSet})
         const budget = Number(category.budget) + (category.budgetOffSet || 0)
         let spent = calculateCurrentExpenses(category)
 

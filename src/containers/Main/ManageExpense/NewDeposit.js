@@ -10,13 +10,14 @@ import { categories } from '../../../tempStubs'
 import { addExpense } from '../../../store/actions/budgetActions'
 
 
-class NewExpense extends React.Component {
+class NewDeposit extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state= {
 			amount: '',
             location: '',
-            description: '',
+			description: '',
+			deposit: true,
 			rememberLocation: false
 		}
 	}
@@ -26,11 +27,10 @@ class NewExpense extends React.Component {
 	}
 
 	handleSubmit = async(e) => {
-		// e.preventDefault();
 		const { id } = this.props.match.params
 		await this.props.addExpense(this.props.auth.uid, this.props.category, this.state)
 		this.setState({submitted: true})
-		// this.props.history.push(`/`)
+		this.props.history.push(`/`)
 	}
 
 	handleBack = (e) => {
@@ -67,8 +67,6 @@ class NewExpense extends React.Component {
 	}
 
 	checkAuth = (props) => {
-	// 	const { auth, category } = this.props
-	// 	if (!auth.uid) return { render: <Redirect to='/signin' /> }
 		if (this.state.submitted) return { render: <Redirect to='/' /> }
 
 		if (!this.props.category) {
@@ -92,7 +90,7 @@ class NewExpense extends React.Component {
 		return(
 			<div className="container center">
 				<form className="form white row relative">
-					<h5 className={`${category.color}`}> <span className="underline-text bold">Expense</span> Entry: <span>{category.name}</span></h5>
+					<h5 className={`${category.color}`}> <span className="underline-text bold">Deposit</span> Entry: <span>{category.name}</span></h5>
 
 					<div className="input-field input-entry offset-s3 col s6">
 						<p className="input-label left">Amount:</p>
@@ -181,7 +179,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		addExpense: (uid, category, expense) => dispatch(addExpense(uid, category, expense))
+		addExpense: (uid, category, transaction) => dispatch(addExpense(uid, category, transaction))
 	}
 }
 
@@ -196,4 +194,4 @@ export default compose(
             }
         ]
     })
-)(withRouter(NewExpense))
+)(withRouter(NewDeposit))

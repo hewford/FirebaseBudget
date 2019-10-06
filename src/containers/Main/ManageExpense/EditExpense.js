@@ -41,7 +41,7 @@ class EditExpense extends React.Component {
     }
 
 	handleSubmit = async(e) => {
-        console.log(document.getElementById('date').M_Datepicker.date)
+        // console.log(document.getElementById('date').M_Datepicker.date)
 		// e.preventDefault();
 		// const {id} = this.props.match.params
 		// await this.props.addExpense({id, ...this.state})
@@ -93,7 +93,6 @@ class EditExpense extends React.Component {
         // const style = {color: category.color}
         const today = new Date().toJSON().replace(/T.*/, '')
 		// TODO: date picker max
-		console.log(this.state)
 		return(
 			<MuiPickersUtilsProvider utils={MomentUtils}>
 			<div className="container center main-section" >
@@ -184,7 +183,6 @@ const mapStateToProps = (state, props) => {
 
 	// console.log(history)
 	const { auth } = state.firebase
-	console.log(expense)
     return { auth, category, expense }
 }
 

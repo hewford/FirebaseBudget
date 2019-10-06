@@ -36,16 +36,14 @@ export default class DatePicker extends React.Component{
 
   componentDidMount() {
     Materialize.AutoInit();
-    console.log('hi')
     var context = this;
     // var elems = document.querySelectorAll('.datepicker-day-button');
-    console.log(elems)
+    // console.log(elems)
     // elems.addEventListener('click', (e) => {
     //     console.log(e)
     // })
 
     var elems = document.querySelectorAll('.queso');
-    console.log(elems)
     
     Materialize.Datepicker.init(elems, {
       container: 'body',
@@ -54,7 +52,7 @@ export default class DatePicker extends React.Component{
         console.log('opened')
       },
       onSelect: function (date) {
-        console.log(date)
+        // console.log(date)
         context.setState({ value: context.state.value });
         context.props.onChange(date);
       },
