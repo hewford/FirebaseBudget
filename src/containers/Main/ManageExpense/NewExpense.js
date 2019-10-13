@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import _ from 'lodash'
 import { Redirect } from 'react-router-dom'
 import formatToDollar from '../../../helpers/formatToDollar'
 import { categories } from '../../../tempStubs'
@@ -73,7 +72,7 @@ class NewExpense extends React.Component {
 				<div>
 				</div>
 			}
-			return { render: <Redirect to='/' /> }
+			// return { render: <Redirect to='/' /> }
 		}
 		return null
 	}

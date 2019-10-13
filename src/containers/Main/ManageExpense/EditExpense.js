@@ -2,12 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { compose } from 'redux'
-import { withRouter, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import _ from 'lodash'
 import MomentUtils from '@date-io/moment';
 import './expense.css'
 import formatToDollar from '../../../helpers/formatToDollar'
-import { categories } from '../../../tempStubs'
 import * as moment from 'moment';
 import { DatePicker } from "@material-ui/pickers";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -86,7 +85,7 @@ class EditExpense extends React.Component {
 					<div>
 					</div>
 				}
-				return { render: <Redirect to='/' /> }
+				// return { render: <Redirect to='/' /> }
 			}
 			return null
 		}

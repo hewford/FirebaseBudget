@@ -31,13 +31,6 @@ const budgetReducer = (state = initState, action) => {
         postMessage: action.err.message
       }
 
-    case 'UPDATED_EXPENSE':
-      console.log('updated expense')
-      return {
-        ...state,
-        postMessage: action.alertMsg
-      }
-
     case 'UPDATED_EXPENSE_ERROR':
       console.log('failed to update expense')
       return {

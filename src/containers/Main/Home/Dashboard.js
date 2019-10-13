@@ -41,7 +41,7 @@ export class Dashboard extends Component {
   }
 
   checkAuth = (props) => {
-    	const { auth, categories } = this.props
+    	const { auth } = this.props
     	if (!auth.uid) return { render: <Redirect to='/signin' /> }
       return null
     }
@@ -50,6 +50,7 @@ export class Dashboard extends Component {
     const checkAuth = this.checkAuth()
     if (checkAuth) return checkAuth.render
     
+    let alert;
     const { postMessage } = this.props.budgetInfo
     if (postMessage) {
       alert = () => {

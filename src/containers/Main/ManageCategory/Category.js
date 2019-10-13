@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { withRouter, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import './category.css'
 import {firestoreConnect} from 'react-redux-firebase'
 import {compose} from 'redux'
 import formatToDollar from '../../../helpers/formatToDollar'
 import { carryoverText, resetMonthlyText, text_colors } from '../../../helpers/contants'
-import { categories } from '../../../tempStubs'
 import { createCategory, submitEdittedCategory } from '../../../store/actions/budgetActions'
 import { connect } from 'react-redux'
 

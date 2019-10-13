@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { compose } from 'redux'
 import { Redirect } from 'react-router-dom'
-import _ from 'lodash'
 import CategoryListItem from './CategoryListItem'
 import { Object } from 'core-js'
 
