@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import './categoryExpenseButton.css'
 import { getCategoryBalance } from "../../../methods/index"
-import { turnOffTouchHold } from "./Dashboard";
 
 export class CategoryExpenseButton extends Component {
     constructor(props) {
@@ -19,17 +18,16 @@ export class CategoryExpenseButton extends Component {
     }
 
     handleMouseDown = (e) => {
-        turnOffTouchHold()
         this.touching = true
         this.doNotNavigate = false
         e.currentTarget.className += 'active'
  
-        const tool_tips = e.currentTarget.parentNode.firstChild
         setTimeout(() => {
             if (this.touching) {
-                this.doNotNavigate = true
-                this.props.setTouchActive(this.props.category.id)
-                // tool_tips.className = tool_tips.className.replace("hidden", "")
+                if(!this.stopEverything){
+                    this.doNotNavigate = true
+                    this.props.setTouchActive(this.props.category.id)
+                }
             }
         }, 250)
         return false;
@@ -41,6 +39,7 @@ export class CategoryExpenseButton extends Component {
         if (!this.doNotNavigate) {
             this.props.history.push(`/new-expense/${this.props.category.id}`)
         } else {
+            // e.currentTarget.className = e.currentTarget.className.replace("active", "")
             this.doNotNavigate = false;
         }
         
@@ -48,10 +47,12 @@ export class CategoryExpenseButton extends Component {
     }
 
     goToDeposit = () => {
+        this.stopEverything = true;
         this.props.history.push(`/new-deposit/${this.props.category.id}`)
     }
 
     goToTransactions = () => {
+        this.stopEverything = true;
         this.props.history.push(`/expenses/${this.props.category.id}`)
     }
 
@@ -59,8 +60,8 @@ export class CategoryExpenseButton extends Component {
         if (this.props.active) {
             return (
                 <div className={`card_tooltip ${this.props.offset}offset-vertical`}>
-                    <i onClick={this.goToDeposit} id="add-deposit" className="material-icons test_deposit">add_circle_outline</i>
-                    <i onClick={this.goToTransactions} id="view-transactions-icon" className="material-icons test_deposit">view_list</i>
+                    <i onTouchStart={this.goToDeposit} id="add-deposit" className="material-icons test_deposit">add_circle_outline</i>
+                    <i onTouchStart={this.goToTransactions} id="view-transactions-icon" className="material-icons test_deposit">view_list</i>
                 </div>
             )
         } else {

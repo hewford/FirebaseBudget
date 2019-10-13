@@ -13,7 +13,7 @@ import { addExpense } from '../../../store/actions/budgetActions'
 class NewExpense extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state= {
+		this.state = {
 			amount: '',
             location: '',
             description: '',
@@ -26,11 +26,8 @@ class NewExpense extends React.Component {
 	}
 
 	handleSubmit = async(e) => {
-		// e.preventDefault();
-		const { id } = this.props.match.params
 		await this.props.addExpense(this.props.auth.uid, this.props.category, this.state)
 		this.setState({submitted: true})
-		// this.props.history.push(`/`)
 	}
 
 	handleBack = (e) => {

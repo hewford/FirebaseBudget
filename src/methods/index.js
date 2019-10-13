@@ -39,7 +39,16 @@ export const addLocation = (category, location) => hasLocation(category, locatio
     : { ...category, locations: [...category.locations, location]}
 
 export const editCategory = (category, updatedInfo) => {
-    return{...category, ...updatedInfo}
+    const currentTimeframe = moment().format("MMMM YYYY")
+    const transaction = category.transactions.find(transaction => {
+        const timeframe = moment(transaction.timestamp).format("MMMM YYYY")
+        return currentTimeframe === timeframe && transaction.monthStartDeposit
+    })
+    const newCategory = editTransaction(
+        {...category, ...updatedInfo},
+        {...transaction, amount: updatedInfo.budget}
+    )
+    return newCategory
 }
 
 export const updateCategory = (budget, categoryId, data, action) => {
@@ -60,6 +69,7 @@ export const addCategory = (budget, category) => {
     }
 
     const initialDeposit = {
+        monthStartDeposit: true,
         amount: category.budget,
         deposit: true,
         description: "Deposit budget amount"
@@ -88,19 +98,18 @@ export const getAllMonthsWithTransactions = category => {
     }, {})
 }
 
-export const getCategoryBalance = category => category.transactions
+export const getCategoryBalance = category => Math.round(category.transactions
     .reduce((balance, transaction) => {
         if (transaction.deposit) balance += Math.abs(transaction.amount)
         else balance -= Math.abs(transaction.amount)
         return balance
-    }, 0)
+    }, 0)*100)/100
 
 export const getAllTransactions = categories => {
 
 }
 
 export const getTransacationsWithinTimeframe = (transactions, filterYear, filterMonth) => {
-    // console.log(moment(1542783527189).format("l"))
     return transactions.reduce((filteredTransactions, transaction) => {
         let year = moment(transaction.timestamp).format("YYYY")
         let month = moment(transaction.timestamp).format("MMMM")

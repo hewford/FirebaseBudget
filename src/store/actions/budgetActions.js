@@ -1,14 +1,26 @@
 import {
   addCategory,
   updateCategory,
-  addTransaction
+  editCategory,
+  addTransaction,
+  editTransaction,
+  addLocation
 } from '../../methods/index';
 
 export const closePostAlert = () => {
   return { type: 'CLOSE_POST_ALERT' }
 }
 
-export const addExpense = (uid, category, transaction) => {
+export const forceUpdateFirestore = () => {
+  return (dispatch, getState, {getFirestore}) => {
+    const firestore = getFirestore();
+    firestore.get("budgets")
+    dispatch({ type: 'UPDATED_FIRESTORE' })
+  }
+}
+
+export const subitEditTransaction = (uid, category, state) => {
+  const transaction = state
   return (dispatch, getState, {getFirestore}) => {
     const firestore = getFirestore();
     firestore.collection('budgets')
@@ -17,7 +29,8 @@ export const addExpense = (uid, category, transaction) => {
       .then(data => {
         const budgetId = data.docs[0].id
         const budget = data.docs[0].data()
-        const newBudget = updateCategory(budget, category.id, transaction, addTransaction)
+        let newBudget = updateCategory(budget, category.id, transaction, editTransaction)
+        debugger
         firestore.collection('budgets')
         .doc(budgetId)
         .set(newBudget)
@@ -32,7 +45,13 @@ export const addExpense = (uid, category, transaction) => {
     }
 };
 
-export const createCategory = (uid, category) => {
+export const addExpense = (uid, category, state) => {
+  const transaction = {
+    amount: state.amount,
+    location: state.location,
+    description: state.description,
+    deposit: state.deposit || false
+  }
   return (dispatch, getState, {getFirestore}) => {
     const firestore = getFirestore();
     firestore.collection('budgets')
@@ -41,21 +60,77 @@ export const createCategory = (uid, category) => {
       .then(data => {
         const budgetId = data.docs[0].id
         const budget = data.docs[0].data()
-        const newBudget = addCategory(budget, category)
+        let newBudget = updateCategory(budget, category.id, transaction, addTransaction)
+        if (state.rememberLocation) {
+          newBudget = updateCategory(newBudget, category.id, state.location, addLocation)
+        }
+        debugger
         firestore.collection('budgets')
         .doc(budgetId)
         .set(newBudget)
         .then(() => {
           firestore.get("budgets")
-          dispatch({ type: 'CREATE_CATEGORY_SUCCESS' });
+          const alertData = { categoryName: category.name, spent: transaction.amount }
+          dispatch({ type: 'NEW_EXPENSE_SUCCESS', alertData })
         }).catch(err => {
-          dispatch({ type: 'CREATE_CATEGORY_ERROR' }, err);
+          dispatch({ type: 'NEW_EXPENSE_ERROR', err });
         });
+      })
+    }
+};
+
+export const createBudget = () => {
+  return (dispatch, getState, {getFirestore}) => {
+    // firestoreAddBudget()
+    const firestore = getFirestore();
+    const userId = getState().firebase.auth.uid;
+    firestore.collection('categories').add({
+      categories: [],
+      userId,
+    }).then(() => {
+      firestore.get("budgets")
+      dispatch({ type: 'CREATE_BUDGET_SUCCESS' });
+    }).catch(err => {
+      dispatch({ type: 'CREATE_BUDGET_ERROR' }, err);
+    });
+  }
+};
+
+export const createCategory = (uid, category) => {
+  return (dispatch, getState, {getFirestore}) => {
+    const firestore = getFirestore();
+    firestore.collection('budgets')
+      .where('userId', '==', uid)
+      .get()
+      .then(data => {
+        if(data.docs.length === 0) {
+          const newBudget = addCategory({ categories: [], userId: uid}, category)
+          firestore.collection('budgets').add(newBudget)
+          .then(() => {
+            firestore.get("budgets")
+            dispatch({ type: 'CREATE_CATEGORY_SUCCESS' });
+          }).catch(err => {
+            dispatch({ type: 'CREATE_CATEGORY_ERROR' }, err);
+          });
+        } else {
+          const budgetId = data.docs[0].id
+          const budget = data.docs[0].data()
+          const newBudget = addCategory(budget, category)
+          firestore.collection('budgets')
+          .doc(budgetId)
+          .set(newBudget)
+          .then(() => {
+            firestore.get("budgets")
+            dispatch({ type: 'CREATE_CATEGORY_SUCCESS' });
+          }).catch(err => {
+            dispatch({ type: 'CREATE_CATEGORY_ERROR' }, err);
+          });
+        }
       })
   }
 };
 
-export const editCategory = (uid, category) => {
+export const submitEdittedCategory = (uid, category) => {
   return (dispatch, getState, {getFirestore}) => {
     const firestore = getFirestore();
     firestore.collection('budgets')
@@ -103,55 +178,3 @@ export const updateExpenses = (expenses, id) => {
       })
   }
 };
-
-
-// export const updateForNewMonth = (user) => {
-  // debugger
-  
-      
-  // return (dispatch, getState, {getFirestore}) => {
-  //   const firestore = getFirestore();
-  //   firestore.collection('users')
-  //     .doc(user.uid)
-  //     .get()
-  //     .then(doc => {
-  //       const profile = doc.data()
-  //       profile.budgetMonth = new Date().getMonth()
-
-  //       firestore.collection('users')
-  //           .doc(user.uid)
-  //           .set(profile)
-  //           .then(() => {
-  //             firestore.collection('categories')
-  //             .where('userId', '==', user.uid)
-  //             .get()
-  //             .then(categories => {
-  //               categories.docs.forEach(doc => {
-
-  //                 firestore.collection('categories')
-  //                   .doc(doc.id)
-  //                   .get()
-  //                   .then(category => {
-  //                     const data = category.data()
-  //                     data.budgetOffSet = data.budget - calculateCurrentExpenses(data, true)
-
-  //                     firestore.collection('categories')
-  //                       .doc(category.id)
-  //                       .set(data)
-  //                       .then(() => {
-  //                         dispatch({ type: 'UPDATED_FOR_NEW_MONTH', alertMsg: 'updated budget for new month'})
-  //                       })
-  //                       .catch(err => {
-  //                         dispatch({ type: 'UPDATED_FOR_NEW_MONTH_ERROR', err });
-  //                       });
-  //                   })
-  //               })
-  //             })
-  //           })
-  //           .catch(err => {
-  //             dispatch({ type: 'UPDATED_FOR_NEW_MONTH_ERROR', err });
-  //           });
-  //     })
-  
-  // }
-// }

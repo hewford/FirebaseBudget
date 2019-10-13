@@ -30,6 +30,9 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
     "remote-redux-devtools": "^0.5.16"
   }
 }

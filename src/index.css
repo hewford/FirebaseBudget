@@ -18,6 +18,9 @@ body {
   background-image: url("loginbackground.png");
   min-width: 100vw;
 }
+.align-left{
+  text-align: left!important;
+}
 
 nav {
   height: 60px;

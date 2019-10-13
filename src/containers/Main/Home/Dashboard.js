@@ -2,25 +2,12 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {firestoreConnect} from 'react-redux-firebase'
 import {compose} from 'redux'
+import { Redirect } from 'react-router-dom'
 import NonActiveButton from './NonActiveButton'
 import CategoryExpenseButton from './CategoryExpenseButton'
-import { closePostAlert } from '../../../store/actions/budgetActions'
+import { closePostAlert, forceUpdateFirestore } from '../../../store/actions/budgetActions'
 import _ from 'lodash'
 
-export const turnOffTouchHold = () => {
-  const cards = document.getElementsByClassName("card")
-  const tooltips = document.getElementsByClassName("card_tooltip")
-  for (let item of cards) {
-    item.className = item
-      .className
-      .replace("active", "")
-  }
-  for (let item of tooltips) {
-    if (!item.className.match(" hidden")) {
-      item.className += "hidden"
-    }
-  }
-}
 export class Dashboard extends Component {
   constructor(props) {
     super(props)
@@ -28,13 +15,24 @@ export class Dashboard extends Component {
       activeButton: null
     }
   }
+
+  componentWillMount(){
+    this.props.forceUpdateFirestore()
+  }
+
   undoTouchActive = (e) => {
     if (this.state.activeButton) {
       setTimeout(() => {
         if (!this.props.history.location.pathname.match("new-deposit")) {
+          const cards = document.getElementsByClassName("card")
+          for (let item of cards) {
+            item.className = item
+              .className
+              .replace("active", "")
+          }
           this.setState({activeButton: null})
         }
-      }, 100)
+      }, 400)
     }
   }
 
@@ -42,7 +40,16 @@ export class Dashboard extends Component {
     this.setState({activeButton: id})
   }
 
+  checkAuth = (props) => {
+    	const { auth, categories } = this.props
+    	if (!auth.uid) return { render: <Redirect to='/signin' /> }
+      return null
+    }
+
   render() {
+    const checkAuth = this.checkAuth()
+    if (checkAuth) return checkAuth.render
+    
     const { postMessage } = this.props.budgetInfo
     if (postMessage) {
       alert = () => {
@@ -109,15 +116,24 @@ export class Dashboard extends Component {
 
 const mapStateToProps = (state, other) => {
   const { budgetInfo } = state
-  const budget = _.get(state.firestore.ordered, 'budgets[0]')
-  const categories = _.get(state.firestore.ordered, 'budgets[0].categories')
   const { auth } = state.firebase
+
+  const budgets = state.firestore.ordered.budgets
+	if (!budgets) return { auth, budgetInfo }
+	const budget = budgets.find(
+		budget => budget.userId === auth.uid
+	)
+  if (!budget) return { auth, budgetInfo }
+  
+  const categories = budget.categories
+  
   return {budget, categories, auth, budgetInfo}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
-    closePostAlert: (expense) => dispatch(closePostAlert(expense))
+    closePostAlert: (expense) => dispatch(closePostAlert(expense)),
+    forceUpdateFirestore: () => dispatch(forceUpdateFirestore())
   }
 }
 

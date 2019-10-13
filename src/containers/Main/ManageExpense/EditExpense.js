@@ -11,40 +11,36 @@ import { categories } from '../../../tempStubs'
 import * as moment from 'moment';
 import { DatePicker } from "@material-ui/pickers";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { subitEditTransaction } from '../../../store/actions/budgetActions'
+
 
 class EditExpense extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state= {
-			amount: '',
-            location: '',
-            description: '',
-            date: '',
-			rememberLocation: false
+			amount: "",
+			deposit: false,
+			description: "",
+			id: null,
+			location: "",
+			timestamp: Date.now()
 		}
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const { expense } = _.cloneDeep(nextProps)
-		if (expense) {
-			expense.date = new Date(expense.date.seconds * 1000)
-			this.setState(expense)
-		}
+		this.setStateWithTransaction(_.cloneDeep(nextProps.transaction))
 	}
 
 	componentDidMount() {
-		const { expense } = _.cloneDeep(this.props)
-		if (expense) {
-			expense.date = new Date(expense.date.seconds * 1000)
-			this.setState(expense)
-		}
-    }
+		this.setStateWithTransaction(_.cloneDeep(this.props.transaction))
+	}
+	
+	setStateWithTransaction = (transaction) => {
+		if (transaction) this.setState(transaction)
+	}
 
 	handleSubmit = async(e) => {
-        // console.log(document.getElementById('date').M_Datepicker.date)
-		// e.preventDefault();
-		// const {id} = this.props.match.params
-		// await this.props.addExpense({id, ...this.state})
+		await this.props.subitEditTransaction(this.props.auth.uid, this.props.category, this.state)
 		this.setState({submitted: true})
 	}
 
@@ -53,7 +49,7 @@ class EditExpense extends React.Component {
         this.props.history.push('/')
 	}
 
-	handleSpentChange = (e) => {
+	handleAmountChange = (e) => {
 		e.preventDefault();
 		let value = (Number(e.target.value.replace(/[^0-9]+/g, ''))/100).toFixed(2)
 		this.setState({
@@ -68,21 +64,34 @@ class EditExpense extends React.Component {
         })
 	}
 
+	handleDepositCheck = e => {
+		e.preventDefault();
+		const deposit = (e.currentTarget.id === "deposit_true")
+		this.setState({
+            deposit,
+        })
+	}
+
 	handleDateChange = (date) => {
-		this.setState({ date })
+		this.setState({ timestamp: date.toDate().getTime() })
 	}
 
 	checkAuth = (props) => {
-		const { auth, category } = this.props
-		if (!category) return { render: (<div></div>)}
-	// 	if (!auth.uid) return { render: <Redirect to='/signin' /> }
-		if (this.state.submitted) return { render: <Redirect to='/' /> }
-		return null
-	}
+		// 	const { auth, category } = this.props
+		// 	if (!auth.uid) return { render: <Redirect to='/signin' /> }
+			if (this.state.submitted) return { render: <Redirect to='/' /> }
+	
+			if (!this.props.category) {
+				return { render:
+					<div>
+					</div>
+				}
+				return { render: <Redirect to='/' /> }
+			}
+			return null
+		}
 
 	render() { // TODO: CLEANUP
-		// console.log(this.state)
-		// return(<div></div>)
 		const checkAuth = this.checkAuth()
 		if (checkAuth) return checkAuth.render
 
@@ -90,33 +99,31 @@ class EditExpense extends React.Component {
 
 		const value = formatToDollar(this.state.amount)
 
-        // const style = {color: category.color}
-        const today = new Date().toJSON().replace(/T.*/, '')
-		// TODO: date picker max
+		const date = new Date(this.state.timestamp)
+		const isDeposit = this.state.deposit === true
 		return(
 			<MuiPickersUtilsProvider utils={MomentUtils}>
 			<div className="container center main-section" >
 				<form className="form white row relative overflow-scroll">
 					<h5 className={`${category.color}`}> Edit Entry: <span>{category.name}</span></h5>
-
-                    <div className="input-field input-entry offset-s2 col s8">
+					{date ? <div className="input-field input-entry offset-s2 col s8">
 						<p className="input-label left relative">Date:</p>
 						<br />
 						<DatePicker
 							disableFuture
 							autoOk
 							className="custom-date-picker"
-							value={this.state.date}
+							value={moment(this.state.timestamp)}
 							onChange={this.handleDateChange}
 							animateYearScrolling
 						/>
-					</div>
+					</div> : <div>Could not load date</div>}
 
 					<div className="input-field input-entry offset-s2 col s8">
 						<p className="input-label left">Amount:</p>
 						<input type="text" pattern="[0-9]*" step="0.01" className="spent-input"
 						value={value !== '0' ? value : ''}
-						onChange={this.handleSpentChange}
+						onChange={this.handleAmountChange}
 						/>
 					</div>
 
@@ -139,6 +146,23 @@ class EditExpense extends React.Component {
                             onChange={this.handleChange}
 						/>
 					</div>
+					<div className="offset-s2 col s8 align-left">
+						<span >Deposit:</span>
+						<p id="deposit_true" data-name="isDeposit" onClick={this.handleDepositCheck} className="radio-btn-container">
+                            <label>
+                                <input name="group1" className="radio-btn" onChange={()=>{}}
+                                    type="radio" checked={isDeposit}/>
+                                <span>True</span>
+                            </label>
+                        </p>
+                        <p id="deposit_false" data-name="isDeposit" onClick={this.handleDepositCheck} className="radio-btn-container">
+                            <label>
+                                <input name="group1" className="radio-btn" onChange={()=>{}}
+                                    type="radio" checked={!isDeposit} />
+                                <span>False</span>
+                            </label>
+                        </p>
+                    </div>
 
 					<div className="input-field col s12">
 						<button onClick={this.handleSubmit} className="mx-1 btn pink lighten-1 z-depth-0">Submit</button>
@@ -174,27 +198,35 @@ function moveCursorToEnd(e) {
 // Submit sends new expense list (with added expense) to firebase
 
 const mapStateToProps = (state, props) => {
-	const { id, monthId, expenseId } = props.match.params
-	const category = _.get(state.firestore.ordered, `budgets[0].categories.${id}`, null)
-	const expense = _.get(
-		state.firestore.ordered,
-		`budgets[0].categories.${id}.transactionHistory.${monthId}.transactions`,
-	[]).find(expense => expense.id === expenseId)
-
-	// console.log(history)
+	const { expenseId } = props.match.params
 	const { auth } = state.firebase
-    return { auth, category, expense }
+
+	const budgets = state.firestore.ordered.budgets
+	if (!budgets) return { auth }
+	const budget = budgets.find(
+		budget => budget.userId === auth.uid
+	)
+	if (!budget) return { auth }
+
+	const category = budget.categories
+		.find(
+			category => category.id === props.match.params.id
+		) || {transactions:[]}
+	
+	const transaction = category.transactions
+		.find(transaction => transaction.id === expenseId)
+	console.log("MAPPING TRANSACTION", transaction)
+    return { auth, category, transaction }
 }
 
-//   const mapDispatchToProps = dispatch => {
-//       return {
-//       closePostAlert: (expense) => dispatch(closePostAlert(expense)),
-//       updateForNewMonth: (data) => dispatch(updateForNewMonth(data))
-//       }
-//   }
+const mapDispatchToProps = dispatch => {
+	return {
+		subitEditTransaction: (uid, category, expense) => dispatch(subitEditTransaction(uid, category, expense))
+	}
+}
 
 export default compose(
-    connect(mapStateToProps, null, null),
+    connect(mapStateToProps, mapDispatchToProps),
     firestoreConnect( props => {
         const user = props.auth
         if (!user.uid) return []

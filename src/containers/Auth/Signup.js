@@ -1,5 +1,10 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
+import './login.css';
+import selectPage from '../../helpers/selectPage'
+import { signUp } from '../../store/actions/authActions'
 import './signup.css';
 
 class Signup extends Component {
@@ -15,13 +20,22 @@ class Signup extends Component {
           [e.target.id]: e.target.value
         })
       }
-      handleSubmit = (e) => {
+      handleSubmit = async(e) => {
         console.log('hi')
         e.preventDefault();
-        // this.props.signUp(this.state)
+        await this.props.signUp(this.state)
       }
 
     render() {
+        const { auth } = this.props
+        console.log("auth",auth)
+        if (auth.uid) {
+            selectPage('slideone')
+            return <Redirect to="/" />
+        } else {
+            selectPage('slidezero')
+        }
+        console.log('rendering...')
         return (
             <div>
                 <form onSubmit={this.handleSubmit} className="form white" action="#">
@@ -61,7 +75,20 @@ class Signup extends Component {
     }
 }
 
-export default Signup
+const mapStateToProps = (state) => {
+    return {
+        authError: state.auth.authError,
+        auth: state.firebase.auth
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signUp: (creds) => dispatch(signUp(creds))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Signup)
 
 // route: signup
 // copy logic from version 2, but route to manage categories immediately to set up categories

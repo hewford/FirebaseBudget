@@ -17,17 +17,19 @@ export class Login extends Component {
             [e.target.id]: e.target.value
         })
     }
-    handleSubmit = (e) => {
+    handleSubmit = async(e) => {
         e.preventDefault()
-        this.props.signIn(this.state)
+        await this.props.signIn(this.state)
     }
 
 
     render() {
         const { auth } = this.props
         if (auth.uid) {
-            // selectPage('slideone')
-            // return <Redirect to="/" />
+            selectPage('slideone')
+            return <Redirect to="/" />
+        } else {
+            selectPage('slidezero')
         }
 
         return (

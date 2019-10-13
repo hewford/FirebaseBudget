@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 import './category.css'
+import {firestoreConnect} from 'react-redux-firebase'
+import {compose} from 'redux'
 import formatToDollar from '../../../helpers/formatToDollar'
 import { carryoverText, resetMonthlyText, text_colors } from '../../../helpers/contants'
 import { categories } from '../../../tempStubs'
-import { createCategory } from '../../../store/actions/budgetActions'
+import { createCategory, submitEdittedCategory } from '../../../store/actions/budgetActions'
 import { connect } from 'react-redux'
 
 
@@ -19,16 +21,25 @@ export class Category extends Component {
     }
 
     componentWillMount() {
-        if (this.props.match.params.id) {
-            this.category = categories[Number(this.props.match.params.id) - 1]; // TODO: to mapStateToProps
-            const { name, color, budget, balanceLogic, locations } = this.category
-            this.setState({ name, color, budget, balanceLogic, locations, edit: true })
+        console.log(this.props)
+        if (this.props.category) {
+            this.setState(this.props.category)
+        }
+    }
+
+    componentWillReceiveProps(nextProps, props) {
+        if (!props.category && nextProps.category) {
+            this.setState(nextProps.category)
         }
     }
 
     handleSubmit = async(e) => {
         console.log(`submitting ${this.state.name}`)
-        await this.props.createCategory(this.props.auth.uid, this.state)
+        if (this.props.category) {
+            await this.props.submitEdittedCategory(this.props.auth.uid, this.state)
+        } else {
+            await this.props.createCategory(this.props.auth.uid, this.state)
+        }
         this.setState({submitted: true})
     }
 
@@ -73,7 +84,7 @@ export class Category extends Component {
             {colors.map((color, index) => {
                 const shade = color.split(' ')
                 return (
-                    <div key={color[0][0]} className="color-picker-button">
+                    <div key={color[0][0]+'-'+index} className="color-picker-button">
                         <div key={shade[0] + index} onClick={this.setColor} data-color={`${shade[0]}-text text-${shade[1] || shade[0]}`} className={`${shade[0]} ${shade[1]} white-text bold-text my-1`}>
                             {shade[0]}
                         </div>
@@ -99,6 +110,10 @@ export class Category extends Component {
 
         const value = formatToDollar(budget)
 
+        const { category } = this.props
+
+        console.log(this.props.category ? true:false)
+
         return (
             <div className="container center main-section overflow-scroll relative" >
                 <div className={`color-pick form overflow-scroll relative ${colorPicker ? '' : 'hide'}`}>
@@ -109,7 +124,7 @@ export class Category extends Component {
                 </div>
 
 				<form className="form white row">
-					<h5>{this.state.edit ? 'Edit' : 'New'} Category</h5>
+					<h5>{category ? 'Edit' : 'New'} Category</h5>
 
                     <div className="input-field input-entry offset-s2 col s8">
 						<p className="input-label left">Category Name:</p>
@@ -137,14 +152,14 @@ export class Category extends Component {
                         <p id="Carryover" data-name="balanceLogic" onClick={this.handleChange} className="radio-btn-container">
                             <label>
                                 <input name="group1" className="radio-btn"
-                                    type="radio" checked={this.state.balanceLogic === "Carryover"} />
+                                    type="radio" defaultChecked={this.state.balanceLogic === "Carryover"} />
                                 <span>Carryover</span>
                             </label>
                         </p>
                         <p id="Reset Monthly" data-name="balanceLogic" onClick={this.handleChange} className="radio-btn-container">
                             <label>
                                 <input name="group1" className="radio-btn"
-                                    type="radio" checked={this.state.balanceLogic === "Reset Monthly"} />
+                                    type="radio" defaultChecked={this.state.balanceLogic === "Reset Monthly"} />
                                 <span>Reset Monthly</span>
                             </label>
                         </p>
@@ -189,16 +204,39 @@ export class Category extends Component {
 
 const mapStateToProps = (state, props) => {
     const { auth } = state.firebase
-    return { auth }
+	const budgets = state.firestore.ordered.budgets
+	if (!budgets || !props.match) return { auth }
+	const budget = budgets.find(
+		budget => budget.userId === auth.uid
+	)
+	if (!budget) return { auth }
+	const category = budget.categories.find(
+		category => category.id === props.match.params.id
+    ) || null
+    
+    return { auth, category }
 }
   
 const mapDispatchToProps = dispatch => {
 	return {
-		createCategory: (uid, category) => dispatch(createCategory(uid, category))
+        createCategory: (uid, category) => dispatch(createCategory(uid, category)),
+        submitEdittedCategory: (uid, category) => dispatch(submitEdittedCategory(uid, category))
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Category))
+export default compose(connect(mapStateToProps, mapDispatchToProps), firestoreConnect(props => {
+    const user = props.auth
+    if (!user.uid) 
+      return []
+    return [
+      {
+        collection: 'budgets'
+      },
+      {collection:"categories"}
+    ]
+  }))(Category)
+
+// export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Category))
 
 // reads params (params: edit & category_uid)
 // if edit and category_uid, render category data to be edited

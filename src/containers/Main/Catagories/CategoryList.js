@@ -3,23 +3,28 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { compose } from 'redux'
+import { Redirect } from 'react-router-dom'
 import _ from 'lodash'
 import CategoryListItem from './CategoryListItem'
-import { categories } from '../../../tempStubs'
+import { Object } from 'core-js'
 
 export class CategoryList extends Component {
+    checkAuth = (props) => {
+        const { auth, categories } = this.props
+        if (!categories) return {render: <div></div>}
+    	if (!auth.uid) return { render: <Redirect to='/signin' /> }
+      return null
+    }
+
     render() {
+        const checkAuth = this.checkAuth(this.props)
+        if (checkAuth) return checkAuth.render
+
+        const categories = this.props.categories;
+
         return (
             <div className="dash center-list relative overflow-scroll">
-                {categories.map((category, index) => {
-                    return (
-                        <CategoryListItem
-                            key={`category-${index}`}
-                            category={category}
-                        />
-                    )
-                })}
-                {_.values(this.props.categories).map((category, index) => {
+                {Object.values(categories).map((category, index) => {
                     return (
                         <CategoryListItem
                             key={`category-${index}`}
@@ -36,10 +41,18 @@ export class CategoryList extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const categories = _.get(state.firestore.ordered, 'budgets[0].categories')
     const { auth } = state.firebase
 
-    return { categories, auth }
+    const budgets = state.firestore.ordered.budgets
+        if (!budgets) return { auth }
+        const budget = budgets.find(
+            budget => budget.userId === auth.uid
+        )
+    if (!budget) return { auth }
+    
+    const categories = budget.categories || {}
+    
+    return {categories, auth}
 }
 
 export default compose(

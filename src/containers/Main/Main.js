@@ -31,7 +31,7 @@ class Main extends Component {
                     <Route exact path='/new-category' component={Category}/>
                     <Route
                         path='/edit-category/:id'
-                        component={() => <Category edit={true} />}
+                        component={(props) => <Category {...props} edit={true} />}
                     />
                 </Switch>
             </div>

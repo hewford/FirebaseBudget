@@ -8,13 +8,10 @@ export class CategoryListItem extends Component {
     }
     render() {
         const { color, name, budget, balanceLogic } = this.props.category
-        const style = { color }
-
         return (
             <div onClick={this.handleClick} className={`card white`}>
-                {/* <span className="float-right">...</span> */}
                 <div className="card-content black-text">
-                    <div className="card-title" style={style}>
+                    <div className={`${color} card-title`}>
                         { name }
                     </div>
                     <p className="category-summary"><span className="bold">Budget: </span>${budget}</p>
@@ -26,6 +23,3 @@ export class CategoryListItem extends Component {
 }
 
 export default withRouter(CategoryListItem)
-
-// renders category summary: title, budget amount, balance logic
-// handle click routes to category (params: edit & category_uid)

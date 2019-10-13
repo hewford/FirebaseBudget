@@ -15,8 +15,8 @@ class NewDeposit extends React.Component {
 		super(props)
 		this.state= {
 			amount: '',
-            location: '',
 			description: '',
+			location: '',
 			deposit: true,
 			rememberLocation: false
 		}
@@ -36,13 +36,6 @@ class NewDeposit extends React.Component {
 	handleBack = (e) => {
 		e.preventDefault();
         this.props.history.push('/')
-	}
-
-	toggleRememberLocation = (e) => {
-		e.preventDefault();
-		this.setState({
-			rememberLocation: !this.state.rememberLocation
-		})
 	}
 
 	handleAmountChange = (e) => {
@@ -108,33 +101,6 @@ class NewDeposit extends React.Component {
                             onFocus={moveCursorToEnd}
                             onChange={this.handleChange}
 						/>
-					</div>
-
-					<div className="input-field input-entry offset-s3 col s6">
-						<p className="input-label left">Location:</p>
-						<input id='location' type="text" className="location-input"
-                            placeholder="Optional"
-                            value={this.state.location}
-                            onFocus={moveCursorToEnd}
-                            onChange={this.handleChange}
-						/>
-					</div>
-
-					<p>
-						<label onClick={this.toggleRememberLocation}>
-							<input type="checkbox" onChange={this.toggleRememberLocation} className="filled-in" checked={this.state.rememberLocation} />
-							<span>Remember Location</span>
-						</label>
-					</p>
-
-                    <div className="col s10 offset-s1">
-						{category.locations ? category.locations.map((location, index) => {
-							return(
-								<div key={`location${index}`} id={location} onClick={this.setLocation} className="chip">
-									{location}
-								</div>
-							)
-						}) : null}
 					</div>
 
 					<div className="input-field col s12">

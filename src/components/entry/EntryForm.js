@@ -25,7 +25,6 @@ class EntryForm extends React.Component {
 	handleSubmit = async(e) => {
 		e.preventDefault();
 		const {id} = this.props.match.params
-		debugger
 		await this.props.addExpense({id, ...this.state})
 		this.setState({submitted: true})
 	}

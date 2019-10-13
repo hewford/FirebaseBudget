@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import './drawer.css';
+import {connect} from 'react-redux'
 import selectPage from '../../helpers/selectPage'
+import { signOut } from '../../store/actions/authActions'
+
 
 class Drawer extends Component {
-    logOut = () => {
-        this.props.history.push('/signin')
+    logOut = async() => {
+        await this.props.signOut();
         selectPage('slidezero')
+        // this.props.history.push('/signin')
     }
 
     toCategoriesList = () => {
@@ -32,7 +36,15 @@ class Drawer extends Component {
     }
 }
 
-export default withRouter(Drawer)
+const mapDispatchToProps = dispatch => {
+	return {
+    signOut: () => dispatch(signOut())
+  }
+}
+
+export default connect(null, mapDispatchToProps)(withRouter(Drawer))
+  
+// export default withRouter(Drawer)
 
 // exists on all routes, but requires auth
 // new category --> routes
