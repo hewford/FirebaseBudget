@@ -7,3 +7,20 @@
     top: 8px;
     color: red
 }
+
+.delete_options {
+    margin-top:5%;
+    padding-left: 25%;
+    width: 75%;
+    font-size: 18px;
+}
+
+.delete_yes {
+    width:10vw;
+    float: left;
+}
+
+.delete_no {
+    width:10vw;
+    float: right;
+}

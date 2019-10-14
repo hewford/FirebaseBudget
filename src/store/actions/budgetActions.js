@@ -4,6 +4,7 @@ import {
   editCategory,
   addTransaction,
   editTransaction,
+  deleteTransaction,
   addLocation
 } from '../../methods/index';
 
@@ -30,7 +31,6 @@ export const subitEditTransaction = (uid, category, state) => {
         const budgetId = data.docs[0].id
         const budget = data.docs[0].data()
         let newBudget = updateCategory(budget, category.id, transaction, editTransaction)
-        debugger
         firestore.collection('budgets')
         .doc(budgetId)
         .set(newBudget)
@@ -44,6 +44,30 @@ export const subitEditTransaction = (uid, category, state) => {
       })
     }
 };
+
+export const submitDeleteTransaction = (categoryId, transactionId) => {
+  return (dispatch, getState, {getFirestore}) => {
+    const uid = getState().firebase.auth.uid;
+    const firestore = getFirestore();
+    firestore.collection('budgets')
+      .where('userId', '==', uid)
+      .get()
+      .then(data => {
+        const budgetId = data.docs[0].id
+        const budget = data.docs[0].data()
+        let newBudget = updateCategory(budget, categoryId, transactionId, deleteTransaction)
+        firestore.collection('budgets')
+        .doc(budgetId)
+        .set(newBudget)
+        .then(() => {
+          firestore.get("budgets")
+          dispatch({ type: 'DELETE_TRANSACTION_SUCCESS' })
+        }).catch(err => {
+          dispatch({ type: 'DELETE_TRANSACTION_ERROR', err });
+        });
+      })
+    }
+}
 
 export const addExpense = (uid, category, state) => {
   const transaction = {
@@ -64,7 +88,6 @@ export const addExpense = (uid, category, state) => {
         if (state.rememberLocation) {
           newBudget = updateCategory(newBudget, category.id, state.location, addLocation)
         }
-        debugger
         firestore.collection('budgets')
         .doc(budgetId)
         .set(newBudget)

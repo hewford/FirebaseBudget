@@ -24,6 +24,20 @@ const budgetReducer = (state = initState, action) => {
         postMessage: action.alertMsg
       }
 
+    case 'DELETE_TRANSACTION_SUCCESS':
+        console.log('deleted expense')
+        return {
+          ...state,
+          postMessage: "Transaction deleted"
+        }
+
+    case 'DELETE_TRANSACTION_ERROR':
+        console.log('deleted expense')
+        return {
+          ...state,
+          postMessage: "Failed to delete transaction"
+        }
+
     case 'UPDATE_CATEGORY_ERROR':
       console.log('failed to update category')
       return {
