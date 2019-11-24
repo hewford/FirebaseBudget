@@ -8,8 +8,6 @@ import './expenseList.css'
 import * as moment from 'moment';
 import { submitDeleteTransaction } from '../../../store/actions/budgetActions'
 
-
-
 export class ExpenseListItem extends Component {
     constructor(props){
         super(props)
@@ -22,16 +20,6 @@ export class ExpenseListItem extends Component {
         }, 600)
     }
 
-    handleClick = (e) => {
-        // if (this.isActive) {
-        //     console.log('undoing')
-        //     e.currentTarget.className = e.currentTarget.className.replace('active', "");
-        // }
-        // if (this.loaded) {
-        //     this.props.history.push(`/edit-expense/${this.props.categoryId}/${this.props.monthId}/${this.props.expense.id}`)
-        // }
-    }
-
     handleCancel = e => {
         if (!this.touching) this.setState({delete: false})
     }
@@ -39,44 +27,52 @@ export class ExpenseListItem extends Component {
     handleDelete = async(e) => {
         if (!this.touching) {
             await this.props.submitDeleteTransaction(this.props.categoryId, this.props.expense.id)
-            this.setState({submitted: true})
+            // this.setState({submitted: true})
+            this.setState({delete: false})
         }
     }
 
     handleMouseDown = (e) => {
         this.doNotNavigate = false
         this.touching = true;
+        const currentTarget = e.currentTarget
         if (this.loaded) {
-            
-            e.currentTarget.className += ' active'
-            console.log()
+            currentTarget.className += ' active'
             setTimeout(() => {
+                if (this.moving) return;
                 if (this.touching) {
-                    console.log(this)
+                    currentTarget.className = currentTarget.className.replace('active', "");
                     this.doNotNavigate = true
+                    this.touching = false
+                    this.setState({delete: true})
                 }
             }, 250)
             return false;
         }
     }
 
+    handleTouchMove = e => {
+        this.moving = true;
+    }
+
     handleMouseUp = (e) => {
+        e.currentTarget.className += e.currentTarget.className.replace('active', '')
+        if (this.moving) {
+            this.moving = false;
+            return;
+        }
         if (this.loaded) {
             setTimeout(() => {
                 this.touching = false
             }, 100)
-            console.log(!this.doNotNavigate)
             if (!this.doNotNavigate) {
                 this.props.history.push(`/edit-expense/${this.props.categoryId}/${this.props.monthId}/${this.props.expense.id}`)
-            } else {
-                this.setState({delete: true})
-                e.currentTarget.className = e.currentTarget.className.replace('active', "");
             }
         }
     }
 
     render() {
-        if (this.state.submitted) return ( <Redirect to='/' /> )
+        // if (this.state.submitted) return ( <Redirect to='/' /> )
         console.log(this.props)
         const deleteButton = (<i onTouchStart={this.goToTransactions} id="view-transactions-icon" className="material-icons test_deposit">delete</i>);
         const { timestamp, location, amount, description, deposit } = this.props.expense
@@ -97,7 +93,7 @@ export class ExpenseListItem extends Component {
             )
         }
         return (
-            <div onTouchStart={this.handleMouseDown} onTouchEnd={this.handleMouseUp} onClick={this.handleClick} className={`card white`}>
+            <div onTouchMove={this.handleTouchMove} onTouchStart={this.handleMouseDown} onTouchEnd={this.handleMouseUp} onClick={this.handleClick} className={`card white`}>
                 <div className="card-content black-text">
                     <p className="category-summary"><span className="bold">Date: </span>{moment(timestamp).format('l')}</p>
                         <p className={`summary-spent ${deposit ? "green-text" : "red-text" } text-darken-2`}>${amount}</p>
@@ -118,4 +114,4 @@ const mapDispatchToProps = dispatch => {
 export default compose(connect(null, mapDispatchToProps), firestoreConnect(() => {
     return []
 }))(withRouter(ExpenseListItem))
-  
+

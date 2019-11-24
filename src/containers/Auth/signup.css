@@ -32,3 +32,14 @@ button {
 .signin-link {
     color: #ec407a
 }
+
+@media only screen and (max-width: 321px) {
+    .form {
+      margin-top: 16px;
+      padding:8px;
+    }
+
+    .form-title {
+        margin-bottom: 8px;
+    }
+}

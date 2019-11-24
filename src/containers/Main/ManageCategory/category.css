@@ -51,3 +51,14 @@
 .color-picker-button > div {
     margin: 4px!important;
 }
+
+
+@media only screen and (max-width: 321px) {
+    .balance-logic-description {
+        font-family: Helvetica;
+        font-size: 12px;
+        color: #303030;
+        letter-spacing: 0;
+        line-height: 14px;
+    }
+}

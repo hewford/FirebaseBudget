@@ -27,7 +27,7 @@ nav {
 }
 
 .flex-container {
-  display: flex;  
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -148,7 +148,6 @@ nav {
   margin-block-start:0px;
   margin-block-end:0px;
   font-size: 18px!important;
-  /* color: #ec407a !important; */
 }
 
 button {
@@ -359,6 +358,7 @@ body {
   text-align: left;
 }
 
+
 .header-title {
   color: #4EF3FF;
   font-family: 'Lobster', cursive;
@@ -452,4 +452,115 @@ clear: both;
   /* Currently not supported in Opera but will be soon */
   -o-user-select: none;
   user-select: none;
+}
+
+
+@media only screen and (max-width: 321px) {
+  .header-title {
+    font-size: 30px;
+    line-height: 50px;
   }
+
+  .app-header{
+    height: 60px;
+    padding: 8px;
+  }
+
+  .app-header div {
+    line-height: 44px;
+    text-align: center;
+  }
+
+  .header-menu {
+    color: rgb(126, 147, 151);
+    font-size: 35px;
+    font-weight: 400;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  .header-logo {
+    height: 50px;
+  }
+
+  .form {
+    margin-top: 16px;
+    padding:8px;
+
+  }
+
+  .form-title {
+      margin-bottom: 8px;
+  }
+
+  .input-label{
+    font-size: 12px!important;
+  }
+
+  .location-input, .description-input{
+    font-size: 12px;
+  }
+
+  .spent-input {
+    font-size: 16px!important;
+  }
+
+  .category-name-input {
+    font-size: 16px!important;
+  }
+  /* TODO */
+  .category-button{
+    margin-top: 20px;
+    width:42vw;
+    height:80px;
+    font-weight: 600;
+    font-family: 'Trebuchet MS'
+  }
+
+  h5{
+    height: 20px;
+    font-size: 18px!important;
+  }
+
+  .form h5{
+    margin-bottom:8px;
+    margin-top:8px;
+  }
+
+  input {
+    height:28px!important;
+    margin-bottom: 4px!important;
+    font-size: 14px!important;
+  }
+
+  label > span {
+    font-size: 12px!important;
+  }
+
+  label > span::after {
+    margin-top:2px;
+    height: 18px!important;
+    width: 18px!important;
+  }
+
+  .chip{
+    font-size: 10px!important;
+    height: 26px!important;
+    line-height: 26px!important;
+    margin-bottom: 1px!important;
+  }
+
+  button {
+    height: 32px!important;
+    font-size: 13px!important;
+    line-height: 32px!important;
+  }
+
+  .category-summary {
+    font-size: 14px!important;
+  }
+
+  .color-picker-button {
+    font-size: 24px!important;
+  }
+}

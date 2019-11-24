@@ -8,23 +8,18 @@
 
 .empty-card {
     transition: .2s ease-in-out!important;
-    transform: scale(1); 
+    transform: scale(1);
     min-height: 94px!important;
     position: relative;
     width: 100%;
 }
 
 .card {
-    transition: .2s ease-in-out!important;
-    transform: scale(1); 
-    min-height: 80px!important;
-    position: relative;
-    box-shadow: 1px 2px 5px 1px rgba(0,0,0,0.50)!important;
-    width: 100%;
+    min-height: 75px!important;
 }
 
 .card.active {
-    transform: scale(0.98); 
+    transform: scale(0.98);
     box-shadow: 2px 3px 6px 2px rgba(0,0,0,0.5)!important;
     background-color: rgba(225, 225, 225, 0.9)!important;
     border: 1px solid rgba(0,0,0,0.2)!important;
@@ -49,7 +44,7 @@
     bottom: 8px;
     right: 8px;
 }
-  
+
 .card_tooltip {
     -webkit-animation: fadein .2s;
 }
@@ -94,10 +89,46 @@
 }
 
 #add-deposit.active {
-    transform: scale(1.1); 
+    transform: scale(1.1);
 
 }
 
 .hidden {
     display: none;
+}
+
+@media only screen and (max-width: 321px) {
+    .card {
+        min-height: 60px!important;
+    }
+
+    .card-content {
+        padding-left: 8px!important;
+        padding-top: 4px!important;
+        padding-right: 8px!important;
+        padding-bottom: 4px!important;
+    }
+
+    .card-title {
+        font-size: 18px!important;
+    }
+
+    .card-body{
+        bottom: 4px;
+        right: 4px;
+    }
+
+    .offset-vertical.card_tooltip {
+        width: 120px;
+        height: 40px;
+        left: 158px!important;
+        margin-right: -100px!important;
+    }
+
+    .nonoffset-vertical.card_tooltip {
+        left: 128px!important;
+        width: 120px!important;
+        height: 40px!important;
+        margin-right: 100px!important;
+    }
 }
