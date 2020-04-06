@@ -14,11 +14,17 @@
     text-align: right;
     float: right;
 }
-  
+
 .break-line {
     margin: 8px auto;
     height:1px;
     border-bottom: 1px solid #FFFFFF;
     float: right;
     width: 100%
+}
+
+@media only screen and (max-width: 321px) {
+    .drawer-item{
+        font-size: 22px!important;
+    }
 }

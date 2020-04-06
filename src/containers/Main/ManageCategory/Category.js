@@ -147,7 +147,7 @@ export class Category extends Component {
                             Pick Color
                         </button>
 					</div>
-                    <div className="offset-s3 col s8">
+                    {/* <div className="offset-s3 col s8">
                         <p id="Carryover" data-name="balanceLogic" onClick={this.handleChange} className="radio-btn-container">
                             <label>
                                 <input name="group1" className="radio-btn"
@@ -162,9 +162,9 @@ export class Category extends Component {
                                 <span>Reset Monthly</span>
                             </label>
                         </p>
-                    </div>
+                    </div> */}
 
-                    {this.state.locations.length ? <div className="col s12 collection-overflow">
+                    {/* {this.state.locations.length ? <div className="col s12 collection-overflow">
                         <ul class="collection">
 						{this.state.locations.map((location, index) => {
                             return (
@@ -178,7 +178,7 @@ export class Category extends Component {
                             )
                         })}
                         </ul>
-					</div> : null }
+					</div> : null } */}
 
 					<div className="input-field my-2 col s12">
 						<button onClick={this.handleSubmit} className="mx-1 btn pink lighten-1 z-depth-0">Submit</button>
@@ -212,10 +212,10 @@ const mapStateToProps = (state, props) => {
 	const category = budget.categories.find(
 		category => category.id === props.match.params.id
     ) || null
-    
+
     return { auth, category }
 }
-  
+
 const mapDispatchToProps = dispatch => {
 	return {
         createCategory: (uid, category) => dispatch(createCategory(uid, category)),
@@ -225,7 +225,7 @@ const mapDispatchToProps = dispatch => {
 
 export default compose(connect(mapStateToProps, mapDispatchToProps), firestoreConnect(props => {
     const user = props.auth
-    if (!user.uid) 
+    if (!user.uid)
       return []
     return [
       {

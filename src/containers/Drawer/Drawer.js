@@ -43,10 +43,3 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(null, mapDispatchToProps)(withRouter(Drawer))
-  
-// export default withRouter(Drawer)
-
-// exists on all routes, but requires auth
-// new category --> routes
-// manage categories -> routes
-// logout --> copy logic from version 1

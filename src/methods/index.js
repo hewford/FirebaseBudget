@@ -48,7 +48,7 @@ export const editCategory = (category, updatedInfo) => {
         {...category, ...updatedInfo},
         {...transaction, amount: updatedInfo.budget}
     )
-    return newCategory
+    return {...category, ...updatedInfo}
 }
 
 export const updateCategory = (budget, categoryId, data, action) => {
