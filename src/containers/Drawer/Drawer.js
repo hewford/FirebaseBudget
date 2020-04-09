@@ -4,23 +4,20 @@ import './drawer.css';
 import {connect} from 'react-redux'
 import selectPage from '../../helpers/selectPage'
 import { signOut } from '../../store/actions/authActions'
-
+import navigate from '../../navigation'
 
 class Drawer extends Component {
-    logOut = async() => {
+    logOut = async () => {
         await this.props.signOut();
-        selectPage('slidezero')
-        // this.props.history.push('/signin')
+        navigate.signOut(this.props)
     }
 
     toCategoriesList = () => {
-        this.props.history.push('/categories')
-        selectPage('slideone')
+        navigate.categories(this.props);
     }
 
     toNewCategory = () => {
-        this.props.history.push('/new-category')
-        selectPage('slideone')
+        navigate.newCategory(this.props);
     }
 
     render() {

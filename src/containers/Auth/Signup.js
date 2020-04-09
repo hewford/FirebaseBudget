@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import navigate from '../../navigation'
 import { Redirect } from 'react-router-dom'
 import './login.css';
 import selectPage from '../../helpers/selectPage'
@@ -30,8 +31,8 @@ class Signup extends Component {
         const { auth } = this.props
         console.log("auth",auth)
         if (auth.uid) {
-            selectPage('slideone')
-            return <Redirect to="/" />
+            navigate.dashboard(this.props);
+            return null
         } else {
             selectPage('slidezero')
         }

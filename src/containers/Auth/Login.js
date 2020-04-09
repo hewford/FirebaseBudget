@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Redirect } from 'react-router-dom'
+import navigate from '../../navigation'
 import './login.css';
 import selectPage from '../../helpers/selectPage'
 import { signIn } from '../../store/actions/authActions'
@@ -9,7 +9,8 @@ import { signIn } from '../../store/actions/authActions'
 export class Login extends Component {
     state = {
         email: '',
-        password: ''
+        password: '',
+        count: 0
     }
 
     handleChange = (e) => {
@@ -22,12 +23,11 @@ export class Login extends Component {
         await this.props.signIn(this.state)
     }
 
-
     render() {
         const { auth } = this.props
         if (auth.uid) {
-            selectPage('slideone')
-            return <Redirect to="/" />
+            navigate.dashboard(this.props)
+            return null
         } else {
             selectPage('slidezero')
         }
@@ -46,7 +46,7 @@ export class Login extends Component {
                 <div className="input-field">
                     <button className="btn pink lighten-1 z-depth-0">Submit</button>
                     <div className='red-text center'>
-                        {/* {this.props.authError ? <p>{this.props.authError}</p> : null} */}
+                        {this.props.authError ? <p>{this.props.authError}</p> : null}
                     </div>
                 </div>
                 <div className="form-footer">
