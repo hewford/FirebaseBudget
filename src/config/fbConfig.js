@@ -3,7 +3,7 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 // Replace this with your own config details
-const config = {
+export const config = {
   apiKey: "AIzaSyBlfVg-c1PQJbtyqZjXsG0qTO_SybEaeb8",
   authDomain: "fir-budget-dde79.firebaseapp.com",
   databaseURL: "https://fir-budget-dde79.firebaseio.com",
@@ -20,4 +20,5 @@ const settings = {/* your settings... */ /* timestampsInSnapshots: true */ };
 
 firestore.settings(settings);
 
-export default firebase 
+export const auth = firebase.auth();
+export default firebase

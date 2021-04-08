@@ -49,7 +49,7 @@ export class Dashboard extends Component {
   render() {
     const checkAuth = this.checkAuth()
     if (checkAuth) return checkAuth.render
-    
+
     let alert;
     const { postMessage } = this.props.budgetInfo
     if (postMessage) {
@@ -122,12 +122,12 @@ const mapStateToProps = (state, other) => {
   const budgets = state.firestore.ordered.budgets
 	if (!budgets) return { auth, budgetInfo }
 	const budget = budgets.find(
-		budget => budget.userId === auth.uid
-	)
-  if (!budget) return { auth, budgetInfo }
-  
-  const categories = budget.categories
-  
+    budget => budget.userId === auth.uid
+    )
+    if (!budget) return { auth, budgetInfo }
+
+  const { categories } = budget
+
   return {budget, categories, auth, budgetInfo}
 }
 
@@ -140,7 +140,7 @@ const mapDispatchToProps = dispatch => {
 
 export default compose(connect(mapStateToProps, mapDispatchToProps), firestoreConnect(props => {
   const user = props.auth
-  if (!user.uid) 
+  if (!user.uid)
     return []
   return [
     {

@@ -9,7 +9,10 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import { reduxFirestore, getFirestore } from 'redux-firestore';
 import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
-import fbConfig from './config/fbConfig'
+import fbConfig, {config} from './config/fbConfig'
+import {
+  FirebaseAppProvider,
+} from "reactfire";
 
 const store = createStore(rootReducer,
   compose(
@@ -20,7 +23,12 @@ const store = createStore(rootReducer,
 );
 
 store.firebaseAuthIsReady.then(() => {
-  ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+  ReactDOM.render(
+    <FirebaseAppProvider firebaseConfig={config}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </FirebaseAppProvider>, document.getElementById('root'));
   registerServiceWorker();
 })
 

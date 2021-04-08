@@ -7,7 +7,7 @@
     "@material-ui/core": "^4.0.1",
     "@material-ui/pickers": "^3.0.0",
     "chai": "^4.2.0",
-    "firebase": "^5.3.0",
+    "firebase": "^8.3.2",
     "lodash": "^4.17.11",
     "material-ui": "^0.20.2",
     "materialize-css": "^1.0.0-rc.2",
@@ -18,12 +18,14 @@
     "react-redux-firebase": "^2.1.6",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
+    "reactfire": "^3.0.0-rc.0",
     "redux": "^4.0.0",
     "redux-firestore": "^0.5.7",
     "redux-thunk": "^2.3.0",
     "uniqid": "^5.0.3"
   },
   "scripts": {
+    "lint": "eslint",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
@@ -32,7 +34,16 @@
   "devDependencies": {
     "@babel/cli": "^7.6.2",
     "@babel/core": "^7.6.2",
+    "@babel/eslint-parser": "^7.13.14",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-transform-runtime": "^7.13.15",
     "@babel/preset-env": "^7.6.2",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-add-react-displayname": "^0.0.5",
+    "eslint": "^7.23.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "remote-redux-devtools": "^0.5.16"
   }
 }
