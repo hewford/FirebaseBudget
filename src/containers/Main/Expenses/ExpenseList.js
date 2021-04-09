@@ -1,6 +1,6 @@
 import ExpenseListItem from './ExpenseListItem';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as moment from 'moment';
 import {
   getAllMonthsWithTransactions,
@@ -9,17 +9,25 @@ import {
 import { useCategory } from '../../../config/useCategories';
 import { withRouter } from 'react-router-dom';
 
-export const ExpenseList = ({match}) => {
+export const ExpenseList = ({ match }) => {
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [month, setMonth] = useState(moment().format('MMMM'));
   const [year, setYear] = useState(moment().format('YYYY'));
   const [category] = useCategory(match.params.id);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setHasLoaded(true);
+    }, 750);
+  });
+
+
   const handleMonthClick = (e) => {
-    setMonth(e.target.id);
+    hasLoaded && setMonth(e.target.id);
   };
 
   const handleYearClick = (e) => {
-    setYear(e.target.id);
+    hasLoaded && setYear(e.target.id);
   };
 
   if (!category) return null;
@@ -58,7 +66,6 @@ export const ExpenseList = ({match}) => {
                       <div className={'non-active-month'} id={monthKey} key={monthKey} onClick={handleMonthClick}>{monthKey} </div>
                     );
                   }
-
                 })}
               </div>
             );

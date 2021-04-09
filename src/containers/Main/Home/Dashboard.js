@@ -1,76 +1,76 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {firestoreConnect} from 'react-redux-firebase'
-import {compose} from 'redux'
-import { Redirect } from 'react-router-dom'
-import NonActiveButton from './NonActiveButton'
-import CategoryExpenseButton from './CategoryExpenseButton'
-import { closePostAlert, forceUpdateFirestore } from '../../../store/actions/budgetActions'
-import _ from 'lodash'
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {firestoreConnect} from 'react-redux-firebase';
+import {compose} from 'redux';
+import { Redirect } from 'react-router-dom';
+import NonActiveButton from './NonActiveButton';
+import CategoryExpenseButton from './CategoryExpenseButton';
+import { closePostAlert, forceUpdateFirestore } from '../../../store/actions/budgetActions';
+import _ from 'lodash';
 
 export class Dashboard extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       activeButton: null
-    }
+    };
   }
 
   componentWillMount(){
-    this.props.forceUpdateFirestore()
+    this.props.forceUpdateFirestore();
   }
 
   undoTouchActive = (e) => {
     if (this.state.activeButton) {
       setTimeout(() => {
-        if (!this.props.history.location.pathname.match("new-deposit")) {
-          const cards = document.getElementsByClassName("card")
+        if (!this.props.history.location.pathname.match('new-deposit')) {
+          const cards = document.getElementsByClassName('card');
           for (let item of cards) {
             item.className = item
               .className
-              .replace("active", "")
+              .replace('active', '');
           }
-          this.setState({activeButton: null})
+          this.setState({activeButton: null});
         }
-      }, 400)
+      }, 400);
     }
   }
 
   setTouchActive = (id) => {
-    this.setState({activeButton: id})
+    this.setState({activeButton: id});
   }
 
   checkAuth = (props) => {
-    	const { auth } = this.props
-    	if (!auth.uid) return { render: <Redirect to='/signin' /> }
-      return null
-    }
+    	const { auth } = this.props;
+    	if (!auth.uid) return { render: <Redirect to={'/signin'} /> };
+    return null;
+  }
 
   render() {
-    const checkAuth = this.checkAuth()
-    if (checkAuth) return checkAuth.render
+    const checkAuth = this.checkAuth();
+    if (checkAuth) return checkAuth.render;
 
     let alert;
-    const { postMessage } = this.props.budgetInfo
+    const { postMessage } = this.props.budgetInfo;
     if (postMessage) {
       alert = () => {
         return (
-          <div className='col white s12 red-text center alert-message'>
-          <span>{this.props.budgetInfo.postMessage}</span>
-          <span className="close-message" onClick={this.props.closePostAlert}> Close </span>
-        </div>
-        )
-      }
-    } else alert = () => null
+          <div className={'col white s12 red-text center alert-message'}>
+            <span>{this.props.budgetInfo.postMessage}</span>
+            <span className={'close-message'} onClick={this.props.closePostAlert}> Close </span>
+          </div>
+        );
+      };
+    } else alert = () => null;
 
     let background = this.state.activeButton
-      ? " white "
-      : ''
+      ? ' white '
+      : '';
     return (
       <div
-        onTouchStart={this.undoTouchActive}
-        className={`${background} dash disable_text_highlighting`}>
-          {alert()}
+        className={`${background} dash disable_text_highlighting`}
+        onTouchStart={this.undoTouchActive}>
+        {alert()}
         {_
           .values(this.props.categories)
           .map((category, index) => {
@@ -79,72 +79,72 @@ export class Dashboard extends Component {
                 return (
                   <CategoryExpenseButton
                     active={true}
+                    category={category}
                     key={`category-${index}`}
                     offset={index % 2
-                    ? 'non'
-                    : ''}
-                    category={category}
+                      ? 'non'
+                      : ''}
                     setTouchActive={this.setTouchActive}
                   />
-                )
+                );
               } else {
                 return (
                   <NonActiveButton
                     key={`category-${index}`}
                     offset={index % 2
-                    ? 'non'
-                    : ''}
+                      ? 'non'
+                      : ''}
                   />
-                )
+                );
               }
             } else {
               return (
                 <CategoryExpenseButton
+                  category={category}
                   key={`category-${index}`}
                   offset={index % 2
-                  ? 'non'
-                  : ''}
-                  category={category}
+                    ? 'non'
+                    : ''}
                   setTouchActive={this.setTouchActive}
                 />
-              )
+              );
             }
           })}
       </div>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state, other) => {
-  const { budgetInfo } = state
-  const { auth } = state.firebase
+  const { budgetInfo } = state;
+  const { auth } = state.firebase;
 
-  const budgets = state.firestore.ordered.budgets
-	if (!budgets) return { auth, budgetInfo }
-	const budget = budgets.find(
+  const budgets = state.firestore.ordered.budgets;
+  if (!budgets) return { auth, budgetInfo };
+  const budget = budgets.find(
     budget => budget.userId === auth.uid
-    )
-    if (!budget) return { auth, budgetInfo }
+  );
+  if (!budget) return { auth, budgetInfo };
 
-  const { categories } = budget
+  const { categories } = budget;
 
-  return {budget, categories, auth, budgetInfo}
-}
+  return {budget, categories, auth, budgetInfo};
+};
 
 const mapDispatchToProps = dispatch => {
-	return {
+  return {
     closePostAlert: (expense) => dispatch(closePostAlert(expense)),
     forceUpdateFirestore: () => dispatch(forceUpdateFirestore())
-  }
-}
+  };
+};
 
 export default compose(connect(mapStateToProps, mapDispatchToProps), firestoreConnect(props => {
-  const user = props.auth
+  const user = props.auth;
   if (!user.uid)
-    return []
+    return [];
   return [
     {
       collection: 'budgets'
     }
-  ]
-}))(Dashboard)
+  ];
+}))(Dashboard);
