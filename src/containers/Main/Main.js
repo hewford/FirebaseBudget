@@ -12,20 +12,25 @@ import selectPage from 'helpers/selectPage';
 import { UserProvider, AuthContext } from 'utils/contexts/authProvider';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
+import { RouteContext } from 'utils/contexts/routeProvider';
 
 const Main = ({
   history: {
     push: route
   }}) => {
   const uid = useContext(AuthContext);
+  const router = useContext(RouteContext);
+  console.log('===== MAIN ======');
+  console.log({ router });
 
   useEffect(() => {
     if (uid) {
       route('/');
+      router.navigate('/');
       selectPage('slideone');
     } else {
       route('/signin');
+      router.navigate('signin');
       selectPage('slidezero');
     }
   }, [route, uid]);

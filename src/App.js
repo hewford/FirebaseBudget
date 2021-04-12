@@ -6,6 +6,8 @@ import Drawer from './containers/Drawer/Drawer';
 import 'materialize-css/dist/css/materialize.min.css';
 import M from 'materialize-css';
 import { AuthProvider } from 'utils/contexts/authProvider';
+import { RouteProvider } from 'utils/contexts/routeProvider';
+
 
 const App = () => {
   useEffect(() => {
@@ -17,9 +19,11 @@ const App = () => {
         <div id={'page-container'}>
           <div className={'row'}>
             <AuthProvider>
-              <Auth/>
-              <Main/>
-              <Drawer />
+              <RouteProvider>
+                <Auth/>
+                <Main/>
+                <Drawer />
+              </RouteProvider>
             </AuthProvider>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 import {firestoreConnect} from 'react-redux-firebase';
@@ -8,6 +8,7 @@ import './expenseList.css';
 import * as moment from 'moment';
 import { submitDeleteTransaction } from '../../../store/actions/budgetActions';
 import TouchHoldContainer from '../../../core/TouchHoldContainer';
+import { RouteContext } from 'utils/contexts/routeProvider';
 
 export const ExpenseListItem = ({
   categoryId,
@@ -15,6 +16,7 @@ export const ExpenseListItem = ({
   history,
   submitDeleteTransaction,
 }) => {
+  const router = useContext(RouteContext);
   const [promptDelete, setPromptDelete] = useState(false);
 
   const handleCancel = () => {
@@ -28,6 +30,11 @@ export const ExpenseListItem = ({
 
   const handleTouchHold = () => {
     setPromptDelete(true);
+  };
+
+  const handleClick = () => {
+    router.navigate('/edit-expense', {categoryId, expenseId: expense.id});
+    history.push(`/edit-expense/${categoryId}/${expense.id}`);
   };
 
   const { timestamp, location, amount, description, deposit } = expense;
@@ -50,7 +57,7 @@ export const ExpenseListItem = ({
   }
   return (
     <TouchHoldContainer
-      handleClick={() => history.push(`/edit-expense/${categoryId}/${expense.id}`)}
+      handleClick={handleClick}
       handleTouchHold={handleTouchHold}
     >
       <div className={'card-content black-text'}>
