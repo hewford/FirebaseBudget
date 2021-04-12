@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import navigate from '../../navigation';
-import { Redirect } from 'react-router-dom';
 import './login.css';
 import selectPage from '../../helpers/selectPage';
 import { signUp } from '../../store/actions/authActions';

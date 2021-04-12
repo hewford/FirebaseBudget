@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { UserContext } from './authProvider';
+import { UserContext } from 'utils/contexts/authProvider';
 import {
   useFirestoreDocData,
   useFirestore,

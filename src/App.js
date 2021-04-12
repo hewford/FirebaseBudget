@@ -5,7 +5,7 @@ import Main from './containers/Main/Main';
 import Drawer from './containers/Drawer/Drawer';
 import 'materialize-css/dist/css/materialize.min.css';
 import M from 'materialize-css';
-import { AuthProvider } from './config/authProvider';
+import { AuthProvider } from 'utils/contexts/authProvider';
 
 const App = () => {
   useEffect(() => {

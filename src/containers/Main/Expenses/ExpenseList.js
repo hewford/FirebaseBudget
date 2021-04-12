@@ -6,7 +6,7 @@ import {
   getAllMonthsWithTransactions,
   getTransacationsWithinTimeframe
 } from '../../../methods';
-import { useCategory } from '../../../config/useCategories';
+import { useCategory } from 'utils/hooks/useCategories';
 import { withRouter } from 'react-router-dom';
 
 export const ExpenseList = ({ match }) => {

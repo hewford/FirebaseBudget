@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import './drawer.css';
 import {connect} from 'react-redux';
-import selectPage from '../../helpers/selectPage';
 import { signOut } from '../../store/actions/authActions';
 import navigate from '../../navigation';
 

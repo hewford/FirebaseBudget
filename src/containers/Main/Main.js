@@ -9,7 +9,7 @@ import NewDeposit from './ManageExpense/NewDeposit';
 import EditExpense from './ManageExpense/EditExpense';
 import ExpenseList from './Expenses/ExpenseList';
 import selectPage from 'helpers/selectPage';
-import { UserProvider, AuthContext } from 'config/authProvider';
+import { UserProvider, AuthContext } from 'utils/contexts/authProvider';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
