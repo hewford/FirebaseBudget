@@ -7,19 +7,22 @@ import {
 } from 'reactfire';
 
 export const AuthContext = createContext();
+export const UserContext = createContext();
 
-export const AuthProviderWrapper = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const { data: user, status } = useUser();
   const { uid } = user || {};
 
   return (
-    <AuthProvider uid={uid}>
+    <AuthContext.Provider
+      value={uid}
+    >
       {children}
-    </AuthProvider>
+    </AuthContext.Provider>
   );
 };
 
-export const AuthProvider = ({ children, uid }) => {
+export const UserProvider = ({ children, uid }) => {
   const userDetailsRef = useFirestore()
     .collection('users')
     .doc(uid);
@@ -29,10 +32,10 @@ export const AuthProvider = ({ children, uid }) => {
   );
 
   return (
-    <AuthContext.Provider
+    <UserContext.Provider
       value={{...user, uid}}
     >
       {children}
-    </AuthContext.Provider>
+    </UserContext.Provider>
   );
 };

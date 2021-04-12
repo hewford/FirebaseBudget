@@ -1,15 +1,14 @@
 import { useContext } from 'react';
-import { AuthContext } from './authProvider';
+import { UserContext } from './authProvider';
 import {
   useFirestoreDocData,
   useFirestore,
 } from 'reactfire';
 
 export const useCategories = () => {
-  const { budgetId } = useContext(AuthContext);
+  const { budgetId } = useContext(UserContext);
   const budgetRef = useFirestore().collection('budgets').doc(budgetId);
   const { status, data: budget } = useFirestoreDocData(budgetRef);
-  console.log({ budget });
   if (!budget)
     return [[], budgetRef];
   return [budget.categories, budgetRef];
