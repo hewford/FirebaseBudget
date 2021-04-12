@@ -116,6 +116,11 @@ const NewExpense = ({
   );
 };
 
+NewExpense.propTypes = {
+  match: PropTypes.any,
+  history: PropTypes.any,
+};
+
 function moveCursorToEnd(e) {
   const el = e.currentTarget;
   if (typeof el.selectionStart === 'number') {

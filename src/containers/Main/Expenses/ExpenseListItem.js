@@ -1,12 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { withRouter } from 'react-router-dom';
-import {connect} from 'react-redux';
-import {firestoreConnect} from 'react-redux-firebase';
-import { compose } from 'redux';
+// import { withRouter } from 'react-router-dom';
+// import {connect} from 'react-redux';
+// import {firestoreConnect} from 'react-redux-firebase';
+// import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import './expenseList.css';
 import * as moment from 'moment';
-import { submitDeleteTransaction } from '../../../store/actions/budgetActions';
+// import { submitDeleteTransaction } from '../../../store/actions/budgetActions';
 import TouchHoldContainer from '../../../core/TouchHoldContainer';
 import { RouteContext } from 'utils/contexts/routeProvider';
 
@@ -24,7 +24,7 @@ export const ExpenseListItem = ({
   };
 
   const handleDelete = async() => {
-    await submitDeleteTransaction(categoryId, expense.id);
+    await submitDeleteTransaction(expense.id);
     setPromptDelete(false);
   };
 
@@ -70,11 +70,11 @@ export const ExpenseListItem = ({
   );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    submitDeleteTransaction: (categoryId, transactionId) => dispatch(submitDeleteTransaction(categoryId, transactionId)),
-  };
-};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     submitDeleteTransaction: (categoryId, transactionId) => dispatch(submitDeleteTransaction(categoryId, transactionId)),
+//   };
+// };
 
 ExpenseListItem.propTypes = {
   categoryId: PropTypes.string,
@@ -83,7 +83,9 @@ ExpenseListItem.propTypes = {
   history: PropTypes.any,
 };
 
-export default compose(connect(null, mapDispatchToProps), firestoreConnect(() => {
-  return [];
-}))(withRouter(ExpenseListItem));
+export default ExpenseListItem;
+
+// export default compose(connect(null, mapDispatchToProps), firestoreConnect(() => {
+//   return [];
+// }))(withRouter(ExpenseListItem));
 

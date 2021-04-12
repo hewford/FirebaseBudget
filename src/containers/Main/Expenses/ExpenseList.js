@@ -13,7 +13,7 @@ export const ExpenseList = ({ match }) => {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [month, setMonth] = useState(moment().format('MMMM'));
   const [year, setYear] = useState(moment().format('YYYY'));
-  const [category] = useCategory(match.params.id);
+  const [category, { submitDeleteTransaction }] = useCategory(match.params.id);
 
   useEffect(() => {
     setTimeout(() => {
@@ -55,6 +55,7 @@ export const ExpenseList = ({ match }) => {
                                 expense={transaction}
                                 key={`expense-${i}`}
                                 month={monthKey}
+                                submitDeleteTransaction={submitDeleteTransaction}
                               />
                             );
                           })

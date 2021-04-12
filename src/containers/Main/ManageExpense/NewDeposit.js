@@ -1,115 +1,77 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { Redirect } from 'react-router-dom';
+import React, {useState} from 'react';
 import formatToDollar from '../../../helpers/formatToDollar';
-import { categories } from '../../../tempStubs';
-import { addExpense } from '../../../store/actions/budgetActions';
+import { useCategory } from 'utils/hooks/useCategories';
+import PropTypes from 'prop-types';
 
-class NewDeposit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state= {
-      amount: '',
-      description: '',
+const NewDeposit = ({
+  match,
+  history,
+}) => {
+  const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, { addExpense }] = useCategory(match.params.id);
+
+  if (!category) return null;
+
+  const handleSubmit = async() => {
+    await addExpense({
+      amount,
       location: '',
+      description,
+      name: category.name,
       deposit: true,
-      rememberLocation: false
-    };
-  }
+    });
+    history.push('/');
+  };
 
-  componentWillMount() {
-    this.category = categories[Number(this.props.match.params.id) - 1]; // TODO: to mapStateToProps
-  }
+  const handleBack = () => history.push('/');
 
-	handleSubmit = async(e) => {
-	  await this.props.addExpense(this.props.auth.uid, this.props.category, this.state);
-	  this.setState({submitted: true});
-	  this.props.history.push('/');
-	}
+  const handleAmountChange = (e) => {
+    let value = (Number(e.target.value.replace(/[^0-9]+/g, '')) / 100).toFixed(2);
+    setAmount(value);
+  };
 
-	handleBack = (e) => {
-	  e.preventDefault();
-	  this.props.history.push('/');
-	}
+  const handleDescriptionChange = (e) => setDescription(e.target.value);
 
-	handleAmountChange = (e) => {
-	  e.preventDefault();
-	  let value = (Number(e.target.value.replace(/[^0-9]+/g, ''))/100).toFixed(2);
-	  this.setState({
-	    amount: value
-	  });
-	}
+  const value = formatToDollar(amount);
 
-	handleChange = (e) => {
-	  e.preventDefault();
-	  this.setState({
-	    [e.target.id]: e.target.value
-	  });
-	}
+  return(
+    <div className={'container center'}>
+      <form className={'form white row relative'}>
+        <h5 className={`${category.color}`}> <span className={'underline-text bold'}>Deposit</span> Entry: <span>{category.name}</span></h5>
 
-	setLocation = (e) => {
-	  this.setState({
-	    location: e.target.id
-	  });
-	}
+        <div className={'input-field input-entry offset-s3 col s6'}>
+          <p className={'input-label left'}>Amount:</p>
+          <input className={'spent-input'} onChange={handleAmountChange} pattern={'[0-9]*'} step={'0.01'}
+            type={'text'}
+            value={value !== '0' ? value : ''}
+          />
+        </div>
 
-	checkAuth = (props) => {
-	  if (this.state.submitted) return { render: <Redirect to={'/'} /> };
+        <div className={'input-field input-entry offset-s3 col s6'}>
+          <p className={'input-label left'}>Description:</p>
+          <input className={'description-input'} id={'description'} onChange={handleDescriptionChange}
+            onFocus={moveCursorToEnd}
+            placeholder={'Optional'}
+            type={'text'}
+            value={description}
+          />
+        </div>
 
-	  if (!this.props.category) {
-	    return { render:
-				<div>
-				</div>
-	    };
-	    // return { render: <Redirect to='/' /> }
-	  }
-	  return null;
-	}
+        <div className={'input-field col s12'}>
+          <button className={'mx-1 btn pink lighten-1 z-depth-0'} onClick={handleSubmit}>Submit</button>
+          <button className={'mx-1 btn pink lighten-1 z-depth-0'} onClick={handleBack}>Back</button>
+          <br />
+        </div>
+      </form>
+    </div>
+  );
+};
 
-	render() {
-	  const checkAuth = this.checkAuth();
-	  if (checkAuth) return checkAuth.render;
-
-	  const { category } = this.props || this;
-
-	  const value = formatToDollar(this.state.amount);
-
-	  return(
-	    <div className={'container center'}>
-	      <form className={'form white row relative'}>
-	        <h5 className={`${category.color}`}> <span className={'underline-text bold'}>Deposit</span> Entry: <span>{category.name}</span></h5>
-
-	        <div className={'input-field input-entry offset-s3 col s6'}>
-	          <p className={'input-label left'}>Amount:</p>
-	          <input className={'spent-input'} onChange={this.handleAmountChange} pattern={'[0-9]*'} step={'0.01'}
-	            type={'text'}
-	            value={value !== '0' ? value : ''}
-	          />
-	        </div>
-
-	        <div className={'input-field input-entry offset-s3 col s6'}>
-	          <p className={'input-label left'}>Description:</p>
-	          <input className={'description-input'} id={'description'} onChange={this.handleChange}
-	            onFocus={moveCursorToEnd}
-	            placeholder={'Optional'}
-	            type={'text'}
-	            value={this.state.description}
-	          />
-	        </div>
-
-	        <div className={'input-field col s12'}>
-	          <button className={'mx-1 btn pink lighten-1 z-depth-0'} onClick={this.handleSubmit}>Submit</button>
-	          <button className={'mx-1 btn pink lighten-1 z-depth-0'} onClick={this.handleBack}>Back</button>
-	          <br />
-	        </div>
-	      </form>
-	    </div>
-	  );
-	}
-}
+NewDeposit.propTypes = {
+  match: PropTypes.any,
+  history: PropTypes.any,
+};
 
 function moveCursorToEnd(e) {
   const el = e.currentTarget;
@@ -123,38 +85,4 @@ function moveCursorToEnd(e) {
   }
 }
 
-const mapStateToProps = (state, props) => {
-  const { auth } = state.firebase;
-  const budgets = state.firestore.ordered.budgets;
-
-  if (!budgets) return { auth };
-  const budget = budgets.find(
-    budget => budget.userId === auth.uid
-  );
-  if (!budget) return { auth };
-
-  const category = budget.categories.find(
-    category => category.id === props.match.params.id
-  ) || null;
-
-  return { auth, category };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    addExpense: (uid, category, transaction) => dispatch(addExpense(uid, category, transaction))
-  };
-};
-
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect( props => {
-    const user = props.auth;
-    if (!user.uid) return [];
-    return [
-      {
-        collection: 'budgets'
-      }
-    ];
-  })
-)(withRouter(NewDeposit));
+export default NewDeposit;

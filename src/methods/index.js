@@ -52,18 +52,10 @@ export const editCategory = (category, updatedInfo) => {
   return {...category, ...updatedInfo};
 };
 
-export const updateCategory = (budget, categoryId, data, action) => {
-  return {
-    ...budget,
-    categories: budget.categories
-      .map(category => category.id === categoryId ? action(category, data) : category)
-  };
-};
-
-export const updateCategory2 = (categories, categoryId, data, action) => {
+export const updateCategory = (categories, categoryId, data, action) => {
   return categories.map(category => category.id === categoryId ? action(category, data) : category);};
 
-export const addCategory2 = (categories, category) => {
+export const addCategory = (categories, category) => {
   const defaultProps = {
     locations: [],
     transactions: [],
@@ -82,30 +74,6 @@ export const addCategory2 = (categories, category) => {
 
   return [...categories, updatedCategory];
 };
-export const addCategory = (budget, category) => {
-  if (!category.budget) throw new Error('categories require a budget amount');
-  const defaultProps = {
-    locations: [],
-    transactions: [],
-    color: 'black',
-    id: uniqid.process()
-  };
-
-  const initialDeposit = {
-    monthStartDeposit: true,
-    amount: category.budget,
-    deposit: true,
-    description: 'Deposit budget amount'
-  };
-
-  const updatedCategory = addTransaction({...defaultProps, ...category}, initialDeposit);
-
-  return {
-    ...budget,
-    categories: [...budget.categories, updatedCategory]
-  };
-};
-
 
 export const getAllMonthsWithTransactions = category => {
   return category.transactions
@@ -127,10 +95,6 @@ export const getCategoryBalance = category => Math.round(category.transactions
     else balance -= Math.abs(transaction.amount);
     return balance;
   }, 0)*100)/100;
-
-export const getAllTransactions = categories => {
-
-};
 
 export const getTransacationsWithinTimeframe = (transactions, filterYear, filterMonth) => {
   return transactions.reduce((filteredTransactions, transaction) => {
