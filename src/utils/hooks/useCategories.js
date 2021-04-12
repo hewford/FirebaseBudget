@@ -4,7 +4,7 @@ import {
   useFirestoreDocData,
   useFirestore,
 } from 'reactfire';
-import { addExpense2, subitEditTransaction2 } from 'store/actions/budgetActions';
+import { addExpense2, submitEditTransaction2, createCategory2, submitEdittedCategory2 } from 'store/actions/budgetActions';
 import { ToastContext } from 'utils/contexts/toastProvider';
 
 export const useCategories = () => {
@@ -16,7 +16,7 @@ export const useCategories = () => {
   return [budget.categories, budgetRef];
 };
 
-export const useCategory = (categoryId) => {
+export const useCategory = (categoryId = null) => {
   const { displayToast } = useContext(ToastContext);
 
   const [categories, budgetRef] = useCategories();
@@ -26,7 +26,9 @@ export const useCategory = (categoryId) => {
 
   return [category, {
     addExpense: (state) => addExpense2(budgetRef, categories, categoryId, state, displayToast),
-    subitEditTransaction: (state) => subitEditTransaction2(budgetRef, categories, categoryId, state, displayToast)
+    createCategory: (state) => createCategory2(budgetRef, categories, state, displayToast),
+    subitEditTransaction: (state) => submitEditTransaction2(budgetRef, categories, categoryId, state, displayToast),
+    submitEdittedCategory: (state) => submitEdittedCategory2(budgetRef, categories, state, displayToast),
   }];
 };
 

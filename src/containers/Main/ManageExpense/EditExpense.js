@@ -23,10 +23,10 @@ const EditExpense = ({
   const [transaction = {}, category, actions] = useTransaction(match.params.id, match.params.expenseId);
 
   useEffect(() => {
-    setAmount(transaction.amount);
-    setDeposit(transaction.deposit);
-    setLocation(transaction.location);
-    setDescription(transaction.description);
+    setAmount(transaction.amount || '');
+    setDeposit(transaction.deposit || '');
+    setLocation(transaction.location || '');
+    setDescription(transaction.description || '');
     setTimestamp(transaction.timestamp);
   }, [transaction]);
 

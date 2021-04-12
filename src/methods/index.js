@@ -39,15 +39,16 @@ export const addLocation = (category, location) => hasLocation(category, locatio
   : { ...category, locations: [...category.locations, location]};
 
 export const editCategory = (category, updatedInfo) => {
-  const currentTimeframe = moment().format('MMMM YYYY');
-  const transaction = category.transactions.find(transaction => {
-    const timeframe = moment(transaction.timestamp).format('MMMM YYYY');
-    return currentTimeframe === timeframe && transaction.monthStartDeposit;
-  });
-  const newCategory = editTransaction(
-    {...category, ...updatedInfo},
-    {...transaction, amount: updatedInfo.budget}
-  );
+  // const currentTimeframe = moment().format('MMMM YYYY');
+  // const transaction = category.transactions.find(transaction => {
+  //   const timeframe = moment(transaction.timestamp).format('MMMM YYYY');
+  //   return currentTimeframe === timeframe && transaction.monthStartDeposit;
+  // });
+  // const newCategory = editTransaction(
+  //   {...category, ...updatedInfo},
+  //   {...transaction, amount: updatedInfo.budget}
+  // );
+  // debugger;
   return {...category, ...updatedInfo};
 };
 
@@ -62,6 +63,25 @@ export const updateCategory = (budget, categoryId, data, action) => {
 export const updateCategory2 = (categories, categoryId, data, action) => {
   return categories.map(category => category.id === categoryId ? action(category, data) : category);};
 
+export const addCategory2 = (categories, category) => {
+  const defaultProps = {
+    locations: [],
+    transactions: [],
+    color: 'black',
+    id: uniqid.process()
+  };
+
+  const initialDeposit = {
+    monthStartDeposit: true,
+    amount: category.budget,
+    deposit: true,
+    description: 'Deposit budget amount'
+  };
+
+  const updatedCategory = addTransaction({...defaultProps, ...category}, initialDeposit);
+
+  return [...categories, updatedCategory];
+};
 export const addCategory = (budget, category) => {
   if (!category.budget) throw new Error('categories require a budget amount');
   const defaultProps = {

@@ -1,241 +1,151 @@
-import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
-import './category.css'
-import {firestoreConnect} from 'react-redux-firebase'
-import {compose} from 'redux'
-import formatToDollar from '../../../helpers/formatToDollar'
-import { carryoverText, resetMonthlyText, text_colors } from '../../../helpers/contants'
-import { createCategory, submitEdittedCategory } from '../../../store/actions/budgetActions'
-import { connect } from 'react-redux'
+import React, { useState, useEffect } from 'react';
+import './category.css';
+import formatToDollar from '../../../helpers/formatToDollar';
+import { carryoverText, resetMonthlyText, text_colors } from '../../../helpers/contants';
+import { useCategory } from 'utils/hooks/useCategories';
 
+export const Category = ({ match, history }) => {
+  const [name, setName] = useState('');
+  const [color, setColor] = useState('');
+  const [budget, setBudget] = useState(0);
+  const [balanceLogic, setBalanceLogic] = useState('Carryover');
+  const [locations, setLocations] = useState([]);
+  const [colorPicker, setColorPicker] = useState(false);
 
-export class Category extends Component {
-    state = {
-        name: '',
-        color: '',
-        budget: 0,
-        balanceLogic: 'Carryover',
-        locations: [],
-        colorPicker: false,
+  const [category, { createCategory, submitEdittedCategory }] = useCategory(match.params.id);
+
+  const state = {
+    ...(category || {}),
+    name,
+    color,
+    budget,
+    balanceLogic,
+    locations,
+  };
+
+  useEffect(() => {
+    if (category) {
+      setName(category.name);
+      setColor(category.color);
+      setBudget(category.budget);
+      setBalanceLogic(category.balanceLogic);
+      setLocations(category.locations);
     }
+  }, [category]);
 
-    componentWillMount() {
-        console.log(this.props)
-        if (this.props.category) {
-            this.setState(this.props.category)
-        }
+  const handleSubmit = async(e) => {
+    console.log(`submitting ${name}`);
+    if (category) {
+      await submitEdittedCategory(state);
+    } else {
+      await createCategory(state);
     }
+    history.push('/');
+  };
 
-    componentWillReceiveProps(nextProps, props) {
-        if (!props.category && nextProps.category) {
-            this.setState(nextProps.category)
-        }
-    }
+  const handleCategoryNameChange = (e) => {
+    setName(e.target.value);
+  };
 
-    handleSubmit = async(e) => {
-        console.log(`submitting ${this.state.name}`)
-        if (this.props.category) {
-            await this.props.submitEdittedCategory(this.props.auth.uid, this.state)
-        } else {
-            await this.props.createCategory(this.props.auth.uid, this.state)
-        }
-        this.setState({submitted: true})
-    }
+  const handleNumberChange = (e) => {
+    let value = (Number(e.target.value.replace(/[^0-9]+/g, '')) / 100).toFixed(2);
+    setBudget(value);
+  };
 
-    handleChange = (e) => {
-        if (e.currentTarget.dataset.name) {
-            this.setState({[e.currentTarget.dataset.name]: e.currentTarget.id})
-        } else {
-            this.setState({
-                [e.target.id]: e.target.value
-            })
-        }
-    }
+  //   const removeLocation = (e) => {
+  //     console.log(`removing ${e.target.id}`);
+  //   };
 
-    handleNumberChange = (e) => {
-        let value = (Number(e.target.value.replace(/[^0-9]+/g, ''))/100).toFixed(2)
-		this.setState({
-			budget: value
-		});
-    }
+  const toggleColorPicker = () => setColorPicker(!colorPicker);
 
-    removeLocation = (e) => {
-        console.log(`removing ${e.target.id}`)
-    }
+  const handleColorChange = (e) => {
+    setColor(e.target.dataset.color);
+    setColorPicker(false);
+  };
 
-    toggleColorPicker = (e) => {
-        e.preventDefault();
-        this.setState({
-            colorPicker: !this.state.colorPicker
-        })
-    }
+  const renderColorPicker = (colors) => {
+    return (
+      <div className={''}>
+        {colors.map((color, index) => {
+          const shade = color.split(' ');
+          return (
+            <div className={'color-picker-button'} key={color[0][0]+'-'+index}>
+              <div
+                className={`${shade[0]} ${shade[1]} white-text bold-text my-1`}
+                data-color={`${shade[0]}-text text-${shade[1] || shade[0]}`}
+                key={shade[0] + index}
+                onClick={handleColorChange}>
+                {shade[0]}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
-    setColor = (e) => {
-        this.setState({
-            color: e.target.dataset.color,
-            colorPicker: false
-        })
-    }
+  const value = formatToDollar(budget);
 
-    renderColorPicker = (colors) => {
-        return (
-          <div className="">
-            {colors.map((color, index) => {
-                const shade = color.split(' ')
-                return (
-                    <div key={color[0][0]+'-'+index} className="color-picker-button">
-                        <div key={shade[0] + index} onClick={this.setColor} data-color={`${shade[0]}-text text-${shade[1] || shade[0]}`} className={`${shade[0]} ${shade[1]} white-text bold-text my-1`}>
-                            {shade[0]}
-                        </div>
-                    </div>
-                )
-            })}
+  if (colorPicker)
+    return (
+      <div className={'container center main-section overflow-scroll relative'} >
+        <div className={`color-pick form overflow-scroll relative ${colorPicker ? '' : 'hide'}`}>
+          <div className={'input-field col s12 center'}>
+            <button className={'my-2 btn black white-text lighten-1 z-depth-0'} onClick={toggleColorPicker}>Close</button>
+            {renderColorPicker(text_colors)}
           </div>
-        )
-    }
+        </div>
+      </div>
+    );
 
-    checkAuth = (props) => {
-        // 	const { auth, category } = this.props
-        // 	if (!auth.uid) return { render: <Redirect to='/signin' /> }
-        if (this.state.submitted || (!this.category && this.state.edit)) return { render: <Redirect to='/' /> }
-        return null
-    }
+  return (
+    <div className={'container center main-section overflow-scroll relative'} >
+      <form className={'form white row'}>
+        <h5>{category ? 'Edit' : 'New'} Category</h5>
 
-    render() {
-        const checkAuth = this.checkAuth()
-        if (checkAuth) return checkAuth.render
+        <div className={'input-field input-entry offset-s2 col s8'}>
+          <p className={'input-label left'}>Category Name:</p>
+          <input className={`${color} category-name`} id={'name'} onChange={handleCategoryNameChange}
+            type={'text'}
+            value={name}
+          />
+        </div>
 
-        const { colorPicker, budget } = this.state
+        <div className={'input-field input-entry offset-s2 col s8'}>
+          <p className={'input-label left'}>Budget Amount:</p>
+          <input className={'spent-input'} id={'budget'} onChange={handleNumberChange} pattern={'[0-9]*'}
+            step={'0.01'}
+            type={'text'}
+            value={value !== '0' ? value : ''}
+          />
+        </div>
 
-        const value = formatToDollar(budget)
-
-        const { category } = this.props
-
-        console.log(this.props.category ? true:false)
-
-        return (
-            <div className="container center main-section overflow-scroll relative" >
-                <div className={`color-pick form overflow-scroll relative ${colorPicker ? '' : 'hide'}`}>
-                    <div className="input-field col s12 center">
-                        <button onClick={this.toggleColorPicker} className="my-2 btn black white-text lighten-1 z-depth-0">Close</button>
-                        {this.renderColorPicker(text_colors)}
-                    </div>
-                </div>
-
-				<form className="form white row">
-					<h5>{category ? 'Edit' : 'New'} Category</h5>
-
-                    <div className="input-field input-entry offset-s2 col s8">
-						<p className="input-label left">Category Name:</p>
-                        <input className={`${this.state.color} category-name`} type="text" id="name"
-                            value={this.state.name}
-                            onChange={this.handleChange}
-                        />
-					</div>
-
-					<div className="input-field input-entry offset-s2 col s8">
-						<p className="input-label left">Budget Amount:</p>
-                        <input type="text" pattern="[0-9]*" step="0.01" className="spent-input"
-                            id="budget"
-                            value={value !== '0' ? value : ''}
-                            onChange={this.handleNumberChange}
-						/>
-					</div>
-
-                    <div className="offset-s2 col s8">
-                        <button onClick={this.toggleColorPicker} className="mx-1 btn pink lighten-1 z-depth-0">
+        <div className={'offset-s2 col s8'}>
+          <button className={'mx-1 btn pink lighten-1 z-depth-0'} onClick={toggleColorPicker}>
                             Pick Color
-                        </button>
-					</div>
-                    {/* <div className="offset-s3 col s8">
-                        <p id="Carryover" data-name="balanceLogic" onClick={this.handleChange} className="radio-btn-container">
-                            <label>
-                                <input name="group1" className="radio-btn"
-                                    type="radio" defaultChecked={this.state.balanceLogic === "Carryover"} />
-                                <span>Carryover</span>
-                            </label>
-                        </p>
-                        <p id="Reset Monthly" data-name="balanceLogic" onClick={this.handleChange} className="radio-btn-container">
-                            <label>
-                                <input name="group1" className="radio-btn"
-                                    type="radio" defaultChecked={this.state.balanceLogic === "Reset Monthly"} />
-                                <span>Reset Monthly</span>
-                            </label>
-                        </p>
-                    </div> */}
+          </button>
+        </div>
+        <div className={'input-field my-2 col s12'}>
+          <button className={'mx-1 btn pink lighten-1 z-depth-0'} onClick={handleSubmit}>Submit</button>
+          <br />
+        </div>
+      </form>
 
-                    {/* {this.state.locations.length ? <div className="col s12 collection-overflow">
-                        <ul class="collection">
-						{this.state.locations.map((location, index) => {
-                            return (
-                                <li class="collection-item">
-                                    <div className="align-left">{location}
-                                        <span class="secondary-content">
-                                            <i id={location} onClick={this.removeLocation} class="material-icons black-text">delete</i>
-                                        </span>
-                                    </div>
-                                </li>
-                            )
-                        })}
-                        </ul>
-					</div> : null } */}
+      <div className={'card white'}>
+        <div className={'card-content balance-logic-description align-left'}>
+          <p className={'category-summary'}><span className={'bold'}>{balanceLogic}</span></p>
+          <p className={'category-summary'}>
+            { balanceLogic === 'Carryover' ?
+              carryoverText :
+              resetMonthlyText }
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-					<div className="input-field my-2 col s12">
-						<button onClick={this.handleSubmit} className="mx-1 btn pink lighten-1 z-depth-0">Submit</button>
-                        <br />
-					</div>
-				</form>
-
-                <div onClick={this.handleClick} className={`card white`}>
-                    <div className="card-content balance-logic-description align-left">
-                        <p className="category-summary"><span className="bold">{this.state.balanceLogic}</span></p>
-                        <p className="category-summary">
-                            { this.state.balanceLogic === 'Carryover' ?
-                                carryoverText :
-                                resetMonthlyText }
-                        </p>
-                    </div>
-                </div>
-			</div>
-        )
-    }
-}
-
-const mapStateToProps = (state, props) => {
-    const { auth } = state.firebase
-	const budgets = state.firestore.ordered.budgets
-	if (!budgets || !props.match) return { auth }
-	const budget = budgets.find(
-		budget => budget.userId === auth.uid
-	)
-	if (!budget) return { auth }
-	const category = budget.categories.find(
-		category => category.id === props.match.params.id
-    ) || null
-
-    return { auth, category }
-}
-
-const mapDispatchToProps = dispatch => {
-	return {
-        createCategory: (uid, category) => dispatch(createCategory(uid, category)),
-        submitEdittedCategory: (uid, category) => dispatch(submitEdittedCategory(uid, category))
-	}
-}
-
-export default compose(connect(mapStateToProps, mapDispatchToProps), firestoreConnect(props => {
-    const user = props.auth
-    if (!user.uid)
-      return []
-    return [
-      {
-        collection: 'budgets'
-      },
-      {collection:"categories"}
-    ]
-  }))(Category)
-
-// export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Category))
+export default Category;
 
 // reads params (params: edit & category_uid)
 // if edit and category_uid, render category data to be edited
