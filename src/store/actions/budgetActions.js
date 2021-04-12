@@ -8,18 +8,6 @@ import {
   addLocation
 } from '../../methods/index';
 
-export const closePostAlert = () => {
-  return { type: 'CLOSE_POST_ALERT' };
-};
-
-export const forceUpdateFirestore = () => {
-  return (dispatch, getState, {getFirestore}) => {
-    const firestore = getFirestore();
-    firestore.get('budgets');
-    dispatch({ type: 'UPDATED_FIRESTORE' });
-  };
-};
-
 export const submitDeleteTransaction2 = async(
   budgetRef,
   categories,

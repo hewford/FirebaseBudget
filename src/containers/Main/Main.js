@@ -14,6 +14,7 @@ import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { RouteContext } from 'utils/contexts/routeProvider';
 import { ToastContext } from 'utils/contexts/toastProvider';
+import { AuthCheck } from 'reactfire';
 
 const Main = ({
   history: {
@@ -40,11 +41,11 @@ const Main = ({
   };
 
   return (
-    <div className={'app-page dashboard'} id={'dashboard'} style={{backgroundColor:'#aaa'}}>
+    <div className={'app-page dashboard'} id={'dashboard'} style={{ backgroundColor: '#aaa' }}>
       <div id={'close-drawer'} onClick={toggleDrawer}></div>
-      {toast && <div className={'toasts'}>{toast}</div>}
-      <Header />
-      { uid &&
+      <AuthCheck fallback={<RenderNull />}>
+        {toast && <div className={'toasts'}>{toast}</div>}
+        <Header />
         <UserProvider uid={uid}>
           <Switch>
             <Route exact component={Dashboard} path={'/'}/>
@@ -60,10 +61,12 @@ const Main = ({
             />
           </Switch>
         </UserProvider>
-      }
+      </AuthCheck>
     </div>
   );
 };
+
+const RenderNull = () => null;
 
 Main.propTypes = {
   history: PropTypes.any,

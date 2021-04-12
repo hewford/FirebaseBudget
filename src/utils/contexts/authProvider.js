@@ -4,7 +4,6 @@ import {
   useUser,
   useFirestore,
   useFirestoreDocData,
-  firestore
 } from 'reactfire';
 
 export const AuthContext = createContext();

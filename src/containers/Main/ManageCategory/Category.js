@@ -3,6 +3,7 @@ import './category.css';
 import formatToDollar from '../../../helpers/formatToDollar';
 import { carryoverText, resetMonthlyText, text_colors } from '../../../helpers/contants';
 import { useCategory } from 'utils/hooks/useCategories';
+import PropTypes from 'prop-types';
 
 export const Category = ({ match, history }) => {
   const [name, setName] = useState('');
@@ -143,6 +144,11 @@ export const Category = ({ match, history }) => {
       </div>
     </div>
   );
+};
+
+Category.propTypes = {
+  match: PropTypes.any,
+  history: PropTypes.any,
 };
 
 export default Category;

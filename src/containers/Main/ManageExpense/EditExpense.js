@@ -5,14 +5,12 @@ import formatToDollar from '../../../helpers/formatToDollar';
 import * as moment from 'moment';
 import { DatePicker } from '@material-ui/pickers';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-// import { subitEditTransaction } from '../../../store/actions/budgetActions';
 import { useTransaction } from 'utils/hooks/useCategories';
 import PropTypes from 'prop-types';
 
 const EditExpense = ({
   match,
   history,
-  ...props
 }) => {
   const [timestamp, setTimestamp] = useState('');
   const [deposit, setDeposit] = useState(false);
@@ -148,6 +146,12 @@ function moveCursorToEnd(e) {
     range.select();
   }
 }
+
+EditExpense.propTypes = {
+  match: PropTypes.any,
+  history: PropTypes.any,
+};
+
 
 export default EditExpense;
 // takes category_uid and expense id from params to find expense

@@ -1,12 +1,8 @@
 import React, { useState, useContext } from 'react';
-// import { withRouter } from 'react-router-dom';
-// import {connect} from 'react-redux';
-// import {firestoreConnect} from 'react-redux-firebase';
-// import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './expenseList.css';
 import * as moment from 'moment';
-// import { submitDeleteTransaction } from '../../../store/actions/budgetActions';
 import TouchHoldContainer from '../../../core/TouchHoldContainer';
 import { RouteContext } from 'utils/contexts/routeProvider';
 
@@ -83,7 +79,7 @@ ExpenseListItem.propTypes = {
   history: PropTypes.any,
 };
 
-export default ExpenseListItem;
+export default withRouter(ExpenseListItem);
 
 // export default compose(connect(null, mapDispatchToProps), firestoreConnect(() => {
 //   return [];

@@ -12,6 +12,13 @@ export const signIn = (credentials) => {
   };
 };
 
+// export const signIn2 = (credentials) => {
+//   firebase.auth().signInWithEmailAndPassword(
+//     credentials.email,
+//     credentials.password
+//   );
+// };
+
 export const signOut = () => {
   return (dispatch, getState, {getFirebase}) => {
     const firebase = getFirebase();
