@@ -1,3 +1,4 @@
+import transitions from '@material-ui/core/styles/transitions';
 import {
   addCategory,
   updateCategory,
@@ -21,30 +22,30 @@ export const forceUpdateFirestore = () => {
   };
 };
 
-export const subitEditTransaction = (uid, category, state) => {
-  const transaction = state;
-  return (dispatch, getState, {getFirestore}) => {
-    const firestore = getFirestore();
-    firestore.collection('budgets')
-      .where('userId', '==', uid)
-      .get()
-      .then(data => {
-        const budgetId = data.docs[0].id;
-        const budget = data.docs[0].data();
-        let newBudget = updateCategory(budget, category.id, transaction, editTransaction);
-        firestore.collection('budgets')
-          .doc(budgetId)
-          .set(newBudget)
-          .then(() => {
-            firestore.get('budgets');
-            const alertData = { categoryName: category.name, spent: transaction.amount };
-            dispatch({ type: 'NEW_EXPENSE_SUCCESS', alertData });
-          }).catch(err => {
-            dispatch({ type: 'NEW_EXPENSE_ERROR', err });
-          });
-      });
-  };
-};
+// export const subitEditTransaction = (uid, category, state) => {
+//   const transaction = state;
+//   return (dispatch, getState, {getFirestore}) => {
+//     const firestore = getFirestore();
+//     firestore.collection('budgets')
+//       .where('userId', '==', uid)
+//       .get()
+//       .then(data => {
+//         const budgetId = data.docs[0].id;
+//         const budget = data.docs[0].data();
+//         let newBudget = updateCategory(budget, category.id, transaction, editTransaction);
+//         firestore.collection('budgets')
+//           .doc(budgetId)
+//           .set(newBudget)
+//           .then(() => {
+//             firestore.get('budgets');
+//             const alertData = { categoryName: category.name, spent: transaction.amount };
+//             dispatch({ type: 'NEW_EXPENSE_SUCCESS', alertData });
+//           }).catch(err => {
+//             dispatch({ type: 'NEW_EXPENSE_ERROR', err });
+//           });
+//       });
+//   };
+// };
 
 export const submitDeleteTransaction = (categoryId, transactionId) => {
   return (dispatch, getState, {getFirestore}) => {
@@ -70,6 +71,23 @@ export const submitDeleteTransaction = (categoryId, transactionId) => {
   };
 };
 
+export const subitEditTransaction2 = async(
+  budgetRef,
+  categories,
+  categoryId,
+  {name, ...transaction},
+  displayToast
+) => {
+  let newCategories = updateCategory2(categories, categoryId, transaction, editTransaction);
+  await budgetRef.update({ categories: newCategories })
+    .then(() => {
+      displayToast(`Edited ${name} transaction: $${transaction.amount}.`);
+    })
+    .catch(err => {
+      displayToast(err.message);
+    });
+};
+
 export const addExpense2 = async (
   budgetRef,
   categories,
@@ -77,12 +95,12 @@ export const addExpense2 = async (
   { rememberLocation, name, ...transaction },
   displayToast
 ) => {
-  let newCatories = updateCategory2(categories, categoryId, transaction, addTransaction);
+  let newCategories = updateCategory2(categories, categoryId, transaction, addTransaction);
 
   if (rememberLocation) {
-    newCatories = updateCategory2(newCatories, categoryId, transaction.location, addLocation);
+    newCategories = updateCategory2(newCategories, categoryId, transaction.location, addLocation);
   }
-  await budgetRef.update({ categories: newCatories })
+  await budgetRef.update({ categories: newCategories })
     .then(() => {
       displayToast(`Posted $${transaction.amount} to ${name}.`);
     })

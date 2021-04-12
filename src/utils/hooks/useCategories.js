@@ -4,7 +4,7 @@ import {
   useFirestoreDocData,
   useFirestore,
 } from 'reactfire';
-import { addExpense2 } from 'store/actions/budgetActions';
+import { addExpense2, subitEditTransaction2 } from 'store/actions/budgetActions';
 import { ToastContext } from 'utils/contexts/toastProvider';
 
 export const useCategories = () => {
@@ -25,6 +25,21 @@ export const useCategory = (categoryId) => {
   ) || null;
 
   return [category, {
-    addExpense: (state) => addExpense2(budgetRef, categories, categoryId, state, displayToast)
+    addExpense: (state) => addExpense2(budgetRef, categories, categoryId, state, displayToast),
+    subitEditTransaction: (state) => subitEditTransaction2(budgetRef, categories, categoryId, state, displayToast)
   }];
+};
+
+export const useTransaction = (categoryId, expenseId) => {
+  const [category, actions] = useCategory(categoryId);
+
+  if (!category) return [];
+  const transaction = category.transactions
+    .find(transaction => transaction.id === expenseId);
+
+  return [
+    transaction,
+    category,
+    actions
+  ];
 };

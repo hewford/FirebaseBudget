@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import formatToDollar from '../../../helpers/formatToDollar';
 import { useCategory } from 'utils/hooks/useCategories';
+import PropTypes from 'prop-types';
+
+const InputContainer = ({
+  children,
+  label
+}) => {
+  return (
+    <div className={'input-field input-entry offset-s3 col s6'}>
+      <p className={'input-label left'}>{label}:</p>
+      {children}
+    </div>
+  );
+};
+
+InputContainer.propTypes = {
+  children: PropTypes.any,
+  label: PropTypes.string,
+};
 
 const NewExpense = ({
   match,
   history,
-  auth
 }) => {
   const [amount, setAmount] = useState('');
   const [location, setLocation] = useState('');
@@ -18,10 +32,9 @@ const NewExpense = ({
 
   const [category, {addExpense}] = useCategory(match.params.id);
 
-  const toggleRememberLocation = (e) => setRememberLocation(!rememberLocation);
+  const toggleRememberLocation = () => setRememberLocation(!rememberLocation);
 
-  const handleSubmit = async (e) => {
-    // add push notification...
+  const handleSubmit = async () => {
     await addExpense({
       amount,
       location,
@@ -32,7 +45,7 @@ const NewExpense = ({
     history.push('/');
   };
 
-  const handleBack = (e) => history.push('/');
+  const handleBack = () => history.push('/');
 
   const handleAmountChange = (e) => {
     let value = (Number(e.target.value.replace(/[^0-9]+/g, '')) / 100).toFixed(2);
@@ -52,33 +65,29 @@ const NewExpense = ({
       <form className={'form white row relative'}>
         <h5 className={`${category.color}`}> <span className={'underline-text bold'}>Expense</span> Entry: <span>{category.name}</span></h5>
 
-        <div className={'input-field input-entry offset-s3 col s6'}>
-          <p className={'input-label left'}>Amount:</p>
+        <InputContainer label={'Amount'}>
           <input className={'spent-input'} onChange={handleAmountChange} pattern={'[0-9]*'} step={'0.01'}
             type={'text'}
             value={value !== '0' ? value : ''}
           />
-        </div>
-
-        <div className={'input-field input-entry offset-s3 col s6'}>
-          <p className={'input-label left'}>Description:</p>
+        </InputContainer>
+        <InputContainer label={'Description'}>
           <input className={'description-input'} id={'description'} onChange={handleDescriptionChange}
             onFocus={moveCursorToEnd}
             placeholder={'Optional'}
             type={'text'}
             value={description}
           />
-        </div>
+        </InputContainer>
 
-        <div className={'input-field input-entry offset-s3 col s6'}>
-          <p className={'input-label left'}>Location:</p>
+        <InputContainer label={'Location'}>
           <input className={'location-input'} id={'location'} onChange={handleLocationChange}
             onFocus={moveCursorToEnd}
             placeholder={'Optional'}
             type={'text'}
             value={location}
           />
-        </div>
+        </InputContainer>
 
         <p>
           <label>
