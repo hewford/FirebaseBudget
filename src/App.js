@@ -7,7 +7,7 @@ import 'materialize-css/dist/css/materialize.min.css';
 import M from 'materialize-css';
 import { AuthProvider } from 'utils/contexts/authProvider';
 import { RouteProvider } from 'utils/contexts/routeProvider';
-
+import { ToastProvider } from 'utils/contexts/toastProvider';
 
 const App = () => {
   useEffect(() => {
@@ -19,11 +19,13 @@ const App = () => {
         <div id={'page-container'}>
           <div className={'row'}>
             <AuthProvider>
-              <RouteProvider>
-                <Auth/>
-                <Main/>
-                <Drawer />
-              </RouteProvider>
+              <ToastProvider>
+                <RouteProvider>
+                  <Auth/>
+                  <Main/>
+                  <Drawer />
+                </RouteProvider>
+              </ToastProvider>
             </AuthProvider>
           </div>
         </div>

@@ -13,6 +13,7 @@ import { UserProvider, AuthContext } from 'utils/contexts/authProvider';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { RouteContext } from 'utils/contexts/routeProvider';
+import { ToastContext } from 'utils/contexts/toastProvider';
 
 const Main = ({
   history: {
@@ -20,10 +21,9 @@ const Main = ({
   }}) => {
   const uid = useContext(AuthContext);
   const router = useContext(RouteContext);
-  console.log('===== MAIN ======');
-  console.log({ router });
-
+  const { toast } = useContext(ToastContext);
   useEffect(() => {
+
     if (uid) {
       route('/');
       router.navigate('/');
@@ -42,6 +42,7 @@ const Main = ({
   return (
     <div className={'app-page dashboard'} id={'dashboard'} style={{backgroundColor:'#aaa'}}>
       <div id={'close-drawer'} onClick={toggleDrawer}></div>
+      {toast && <div className={'toasts'}>{toast}</div>}
       <Header />
       { uid &&
         <UserProvider uid={uid}>

@@ -78,8 +78,6 @@ export class CategoryExpenseButton extends Component {
           {this.renderTips()}
           <div
             className={`card white ${this.props.offset}offset-vertical `}
-            onMouseDown={this.handleMouseDown}
-            onMouseUp={this.handleMouseUp}
             onTouchEnd={this.handleMouseUp}
             onTouchStart={this.handleMouseDown}>
             <div className={'card-content black-text'}>
