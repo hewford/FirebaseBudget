@@ -1,26 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import './category.css';
+import PropTypes from 'prop-types';
 
-export class CategoryListItem extends Component {
-    handleClick = () => {
-      this.props.history.push(`/edit-category/${this.props.category.id}`);
-    }
+export const CategoryListItem = ({
+  history,
+  category: {
+    id, color, name, budget, balanceLogic
+  }
+}) => {
+  const handleClick = () => {
+    history.push(`/edit-category/${id}`);
+  };
 
-    render() {
-      const { color, name, budget, balanceLogic } = this.props.category;
-      return (
-        <div className={'card white'} onClick={this.handleClick}>
-          <div className={'card-content black-text'}>
-            <div className={`${color} card-title`}>
-              { name }
-            </div>
-            <p className={'category-summary'}><span className={'bold'}>Budget: </span>${budget}</p>
-            <p className={'category-summary'}><span className={'bold'}>Balance Logic: </span>{balanceLogic}</p>
-          </div>
+  return (
+    <div className={'card white'} onClick={handleClick}>
+      <div className={'card-content black-text'}>
+        <div className={`${color} card-title`}>
+          { name }
         </div>
-      );
-    }
-}
+        <p className={'category-summary'}><span className={'bold'}>Budget: </span>${budget}</p>
+        <p className={'category-summary'}><span className={'bold'}>Balance Logic: </span>{balanceLogic}</p>
+      </div>
+    </div>
+  );
+};
+
+CategoryListItem.propTypes = {
+  category: PropTypes.any,
+  history: PropTypes.any,
+};
 
 export default withRouter(CategoryListItem);

@@ -7,26 +7,32 @@ import PropTypes from 'prop-types';
 import './expenseList.css';
 import * as moment from 'moment';
 import { submitDeleteTransaction } from '../../../store/actions/budgetActions';
-import TouchHoldContainer from 'src/core/TouchHoldContainer';
+import TouchHoldContainer from '../../../core/TouchHoldContainer';
 
 export const ExpenseListItem = ({
   categoryId,
   expense,
+  history,
   submitDeleteTransaction,
 }) => {
-  const [toDelete, setToDelete] = useState(false);
+  const [promptDelete, setPromptDelete] = useState(false);
 
   const handleCancel = () => {
-    setToDelete(false);
+    setPromptDelete(false);
   };
 
   const handleDelete = async() => {
     await submitDeleteTransaction(categoryId, expense.id);
+    setPromptDelete(false);
+  };
+
+  const handleTouchHold = () => {
+    setPromptDelete(true);
   };
 
   const { timestamp, location, amount, description, deposit } = expense;
 
-  if (toDelete) {
+  if (promptDelete) {
     return (
       <div className={'card white'}>
         <div className={'card-content black-text'}>
@@ -43,7 +49,10 @@ export const ExpenseListItem = ({
     );
   }
   return (
-    <TouchHoldContainer handleTouchHold={ setToDelete }>
+    <TouchHoldContainer
+      handleClick={() => history.push(`/edit-expense/${categoryId}/${expense.id}`)}
+      handleTouchHold={handleTouchHold}
+    >
       <div className={'card-content black-text'}>
         <p className={'category-summary'}><span className={'bold'}>Date: </span>{moment(timestamp).format('l')}</p>
         <p className={`summary-spent ${deposit ? 'green-text' : 'red-text' } text-darken-2`}>${amount}</p>
