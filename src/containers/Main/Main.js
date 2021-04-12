@@ -8,8 +8,8 @@ import NewExpense from './ManageExpense/NewExpense';
 import NewDeposit from './ManageExpense/NewDeposit';
 import EditExpense from './ManageExpense/EditExpense';
 import ExpenseList from './Expenses/ExpenseList';
-import selectPage from '../../helpers/selectPage';
-import { UserProvider, AuthContext } from '../../config/authProvider';
+import selectPage from 'helpers/selectPage';
+import { UserProvider, AuthContext } from 'config/authProvider';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -37,7 +37,6 @@ const Main = ({
   return (
     <div className={'app-page dashboard'} id={'dashboard'} style={{backgroundColor:'#aaa'}}>
       <div id={'close-drawer'} onClick={toggleDrawer}></div>
-
       <Header />
       { uid &&
         <UserProvider uid={uid}>

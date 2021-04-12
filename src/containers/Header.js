@@ -1,64 +1,34 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import logo from '../budgetlogo.png';
 import selectPage from '../helpers/selectPage';
 
-class Header extends Component {
-    toggleDrawer = () => {
-      selectPage('slideone', 'slidetwo');
+const Header = ({history, ...props}) => {
+  const toggleDrawer = () => {
+    selectPage('slideone', 'slidetwo');
+  };
+
+  const goBack = () => {
+    if (props.location.pathname !== '/') {
+      history.goBack();
     }
+  };
 
-    goBack = () => {
-      if (this.props.location.pathname !== '/') {
-        this.props.history.goBack();
-      }
-    }
-
-    // componentDidMount() {
-    //   const auth = this.props.auth || {};
-    //   if (auth.uid) {
-    //     this.props.history.push('/');
-    //   } else {
-    //     this.props.history.push('/signin');
-    //   }
-    // }
-
-    render() {
-      return (
-        <div className={'app-header'}>
-          <div>
-            <img alt={'logo'} className={'header-logo'} onClick={this.goBack} src={logo} />
-          </div>
-          <Link className={'header-title'} to={'/'}>
-                    Simply Budget
-          </Link>
-          <i className={'material-icons header-menu'} onClick={this.toggleDrawer}>menu</i>
-        </div>
-      );
-    }
-}
-
-const mapStateToProps = (state, props) => {
-  const { auth } = state.firebase;
-  return { auth };
+  return (
+    <div className={'app-header'}>
+      <div>
+        <img alt={'logo'} className={'header-logo'} onClick={goBack} src={logo} />
+      </div>
+      <Link className={'header-title'} to={'/'}>
+                Simply Budget
+      </Link>
+      <i className={'material-icons header-menu'} onClick={toggleDrawer}>menu</i>
+    </div>
+  );
 };
 
-export default compose(
-  connect(mapStateToProps, null),
-  firestoreConnect( props => {
-    const user = props.auth;
-    if (!user.uid) return [];
-    return [
-      {
-        collection: 'budgets'
-      }
-    ];
-  })
-)(withRouter(Header));
+export default withRouter(Header);
 
 // exists on all routes, but requires auth
 // logo for back button?
